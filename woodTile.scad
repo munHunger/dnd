@@ -1,5 +1,7 @@
+include <plank.scad>;
+
 woodTile();
-module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = false) {
+module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = true) {
     tileHeigth = 5;
     difference() {
         cube([width, depth, tileHeigth]);
@@ -27,12 +29,12 @@ module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = fa
     for(i = [0:1:plankCount/2]) {
         translate([0,(plankWidth + spacing) * i * 2,0]) {
             //Long bar
-            cube([width,plankWidth,plankHeight]);
+            plank([width,plankWidth,plankHeight], nails = [true, true]);
             //2 short bars
             translate([0, plankWidth + spacing])
-            cube([(width - spacing) / 2,plankWidth,plankHeight]);
+            plank([(width - spacing) / 2,plankWidth,plankHeight], nails = [false, true]);
             translate([(width + spacing) / 2, plankWidth + spacing])
-            cube([(width - spacing) / 2,plankWidth,plankHeight]);
+            plank([(width - spacing) / 2,plankWidth,plankHeight], nails = [true, false]);
         }
     }
 }
