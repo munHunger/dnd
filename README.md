@@ -1,8 +1,8 @@
-##DnD
+## DnD
 
 This repository is intended to hold all 3D printable assets related to our DnD sessions.
 
-###Format
+### Format
 
 Everything should be made in `openSCAD` to allow programatic changes such as how many windows a building should have.
 
