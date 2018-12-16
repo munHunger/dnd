@@ -1,11 +1,10 @@
 include <plank.scad>;
 
-woodTile();
 module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = true) {
-    tileHeigth = 5;
+    tileHeigth = 4;
     difference() {
         cube([width, depth, tileHeigth]);
-        connectorCount = 2;
+        connectorCount = 1;
 
         if(printConnectorHoles) {
             union() {
@@ -14,9 +13,9 @@ module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = tr
                     rotate([0,0,90*n])
                     translate([-width / 2, -depth / 2])
                     for(i = [1:1:connectorCount]) {
-                        translate([(width / (connectorCount + 1)) * i, 0, tileHeigth / 2])
-                        rotate([90,0,0])
-                        connector();
+                        translate([(width / (connectorCount + 1)) * i, 0, -0.001])
+                        rotate([0,0,90])
+                        connector(inset = true);
                     }
                 }
             }
@@ -39,19 +38,22 @@ module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = tr
     }
 }
 
-module connector() {
+module connector(inset = false) {
     length = 10;
     width = 4;
-    intersection() {
-        hull() {
-            translate([0,0,length / 2 - width / 2])
-            sphere(r = width/2, $fn = 8);
-            translate([0,0,-length / 2 + width / 2])
-            sphere(r = width/2, $fn = 8);
+    tolerance = 0.2;
+    //Base plate
+    hull() {
+        for(i = [0:1:1]) {
+            mirror([i,0,0])
+            translate([length/2-width/2,0,0])
+            cylinder(r=width/2 + (inset ? tolerance/2 : 0), h=1 + (inset ? tolerance : 0), $fn = 10);
         }
-        union() {
-            cube([width / 3, width, length], center = true);
-            cube([width, width / 3, length], center = true);
-        }
+    }
+    //Pegs
+    for(i = [0:1:1]) {
+        mirror([i,0,0])
+        translate([length/2-width/2,0,0])
+        cylinder(r=width/3 + (inset ? tolerance/2 : 0), h=3 + (inset ? tolerance : 0), $fn = 12);
     }
 }
