@@ -1,4 +1,5 @@
 include <plank.scad>;
+include <connector.scad>;
 
 module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = true) {
     tileHeigth = 4;
@@ -35,25 +36,5 @@ module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = tr
             translate([(width + spacing) / 2, plankWidth + spacing])
             plank([(width - spacing) / 2,plankWidth,plankHeight], nails = [true, false]);
         }
-    }
-}
-
-module connector(inset = false) {
-    length = 10;
-    width = 4;
-    tolerance = 0.2;
-    //Base plate
-    hull() {
-        for(i = [0:1:1]) {
-            mirror([i,0,0])
-            translate([length/2-width/2,0,0])
-            cylinder(r=width/2 + (inset ? tolerance/2 : 0), h=1 + (inset ? tolerance : 0), $fn = 10);
-        }
-    }
-    //Pegs
-    for(i = [0:1:1]) {
-        mirror([i,0,0])
-        translate([length/2-width/2,0,0])
-        cylinder(r=width/3 + (inset ? tolerance/2 : 0), h=3 + (inset ? tolerance : 0), $fn = 12);
     }
 }
