@@ -1,3 +1,4 @@
+include <../plank/plank.scad>;
 crate();
 module crate(width = 25, height = 25, depth = 25, spars = 4) {
     spacing = 0.2;
@@ -12,8 +13,10 @@ module crate(width = 25, height = 25, depth = 25, spars = 4) {
     for(n = [0:1:1]) {
         translate([0,0,n * (height - sparHeight)])
         for(i = [0:1:spars]) {
-            translate([i * sparWidth,0,0])
-            cube([sparWidthWithSpacing, depth, sparHeight]);
+            translate([i * sparWidth + sparWidthWithSpacing,0,n == 1 ? 0 : sparHeight])
+            rotate([0,0,90])
+            mirror([0,0,n == 1 ? 0 : 1])
+            plank([depth, sparWidthWithSpacing, sparHeight], nails = [n  == 1, n == 1]);//plank([sparWidthWithSpacing, depth, sparHeight]);
         }
     }
 
@@ -25,7 +28,11 @@ module crate(width = 25, height = 25, depth = 25, spars = 4) {
         translate([sparHeight,sparHeight,0])
         for(i = [0:1:spars]) {
             translate([0,0,i * sparWidth])
-            cube([sparHeight, depth - sparHeight * 2, sparWidthWithSpacing]);
+            translate([sparHeight,0,sparWidthWithSpacing])
+            rotate([0,-90,0])
+            rotate([0,0,90])
+            plank([depth - sparHeight * 2, sparWidthWithSpacing, sparHeight]);
+            //plank([sparHeight, depth - sparHeight * 2, sparWidthWithSpacing]);
         }
     }
 
@@ -34,7 +41,15 @@ module crate(width = 25, height = 25, depth = 25, spars = 4) {
     for(n = [0:1:4]) {
         rotate([0,0,n*90])
         translate([-width / 2, -depth / 2, 0])
-        translate([spacing, spacing, sparHeight])
-        cube([sparWidth, sparWidth, height - sparHeight * 2]);
+        translate([0.25,sparHeight + 0.25,height - sparHeight * 2 + sparHeight])
+        rotate([0,0,-90])
+        rotate([0,90,0])
+        union() {
+            plank([height - sparHeight * 2, sparWidth, sparHeight]);
+            translate([0,sparHeight,-sparWidth+sparHeight])
+            rotate([90,0,0])
+            plank([height - sparHeight * 2, sparWidth, sparHeight]);
+        }
+        //plank([sparWidth, sparWidth, height - sparHeight * 2]);
     }
 }
