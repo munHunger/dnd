@@ -1,5 +1,5 @@
-include <plank.scad>;
-include <connector.scad>;
+include <../plank/plank.scad>;
+include <../connector/connector.scad>;
 
 module woodTile(width = 50, depth = 50, plankCount = 7, printConnectorHoles = true) {
     tileHeigth = 4;

@@ -1,5 +1,3 @@
-trippleConnector();
-
 module trippleConnector(inset = false) {
     length = 16;
     width = 4;

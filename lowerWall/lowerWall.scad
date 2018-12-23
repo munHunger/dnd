@@ -1,5 +1,5 @@
-include <plank.scad>;
-include <connector.scad>;
+include <../plank/plank.scad>;
+include <../connector/connector.scad>;
 
 lowerWall();
 module lowerWall(width = 50, height = 15, printConnectorHoles = true) {
