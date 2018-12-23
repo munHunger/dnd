@@ -17,6 +17,7 @@ module.exports = {
     semi: 0,
     quotes: 0,
     "space-before-function-paren": 0,
+    "no-path-concat": 0,
     // allow paren-less arrow functions
     "arrow-parens": 0,
     // allow async-await
