@@ -38,7 +38,7 @@ body {
 }
 
 #wrapper {
-  background-color: #2c3e50;
+  background-color: #494a4b;
   color: aliceblue;
   height: 100vh;
   padding: 60px 80px;
