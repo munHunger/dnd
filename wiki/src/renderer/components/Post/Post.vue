@@ -1,6 +1,9 @@
 <template>
   <main :key="fileName">
-    <div class="post">{{data}}</div>
+    <div class="post">
+      <div class="path">{{fileName}}</div>
+      {{data}}
+    </div>
     <div class="info">
       <div v-for="item in info" v-bind:key="item.name">
         <div class="field">
@@ -31,6 +34,13 @@ export default {
 
 <style scoped>
 .post {
+}
+.path::before {
+  content: "/";
+}
+.path {
+  padding: 10px;
+  font-style: italic;
 }
 .info {
   padding: 15px;
