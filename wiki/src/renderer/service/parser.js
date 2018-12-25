@@ -40,13 +40,18 @@ function tokenize(line) {
 function compile(tokens) {
   let parts = [];
   while (tokens.length > 0) {
-    let part = [bold(tokens), italic(tokens), text(tokens)].filter(
-      part => part.consumed > 0
-    )[0];
+    let part = or([heading, bold, italic, text], tokens);
     if (part.consumed == 0) throw error;
     parts.push(part);
     tokens = tokens.slice(part.consumed);
   }
+  // rule(tokens, "line", {
+  //   op: or,
+  //   rules: [
+  //     { op: and, rules: [heading, { op: or, rules: [bold, italic, text] }] },
+  //     { op: or, rules: [bold, italic, text] }
+  //   ]
+  // });
   return {
     class: "line",
     consumed: parts.reduce((acc, val) => acc + val.consumed, 0),
@@ -54,43 +59,106 @@ function compile(tokens) {
   };
 }
 
+function rule(input, name, rule) {
+  let parts = rule.op.call(this, rule.rules, input);
+
+  if (Array.isArray(parts)) {
+    if (parts.filter(part => part.consumed === 0).length > 0)
+      return { consumed: 0 };
+
+    return {
+      class: name,
+      consumed: parts.reduce((acc, val) => acc + val.consumed, 0),
+      value: parts
+    };
+  } else
+    return {
+      class: name,
+      consumed: parts.consumed,
+      value: parts.value
+    };
+}
+
+function and(rules, input) {
+  return rules.reduce((acc, val) => {
+    if (isFunction(val)) {
+      if (acc.length == 0) acc.push(val.call(this, input));
+      else
+        acc.push(
+          val.call(
+            this,
+            input.slice(
+              Math.min(acc.reduce((a, v) => a + v.consumed, 0), input.length)
+            )
+          )
+        );
+    } else {
+      let res = rule(
+        input.slice(
+          Math.min(acc.reduce((a, v) => a + v.consumed, 0), input.length)
+        ),
+        "and",
+        val
+      );
+      if (res.consumed === 0) acc.push(res);
+      else acc = acc.concat(res.value);
+    }
+    return acc;
+  }, []);
+}
+
+function or(rules, input) {
+  let res = rules
+    .map(val => {
+      if (isFunction(val)) return val.call(this, input);
+      else {
+        let res = rule(input, "or", val);
+        return res;
+      }
+    })
+    .filter(part => part.consumed > 0);
+  return res.length > 0 ? res[0] : { consumed: 0 };
+}
+
+function isFunction(functionToCheck) {
+  return (
+    functionToCheck && {}.toString.call(functionToCheck) === "[object Function]"
+  );
+}
+
+function heading(input) {
+  return rule(input, "heading", {
+    op: and,
+    rules: [hash, text]
+  });
+}
+
 function bold(input) {
-  let parts = andRules([underscore, italic, underscore], input);
-  if (parts.filter(part => part.consumed === 0).length > 0)
-    return { consumed: 0 };
-  return {
-    class: "bold",
-    consumed: parts.reduce((acc, val) => acc + val.consumed, 0),
-    value: parts
-  };
+  return rule(input, "bold", {
+    op: or,
+    rules: [
+      { op: and, rules: [underscore, italic, underscore] },
+      { op: and, rules: [asterix, italic, asterix] }
+    ]
+  });
 }
 
 function italic(input) {
-  let parts = andRules([underscore, text, underscore], input);
-  if (parts.filter(part => part.consumed === 0).length > 0)
-    return { consumed: 0 };
-  return {
-    class: "italic",
-    consumed: parts.reduce((acc, val) => acc + val.consumed, 0),
-    value: parts
-  };
+  return rule(input, "italic", {
+    op: or,
+    rules: [
+      { op: and, rules: [underscore, text, underscore] },
+      { op: and, rules: [asterix, text, asterix] }
+    ]
+  });
 }
 
-//Create an AND operation of rules
-function andRules(rules, input) {
-  return rules.reduce((acc, val) => {
-    if (acc.length == 0) acc.push(val.call(this, input));
-    else
-      acc.push(
-        val.call(
-          this,
-          input.slice(
-            Math.min(acc.reduce((a, v) => a + v.consumed, 0), input.length)
-          )
-        )
-      );
-    return acc;
-  }, []);
+function hash(input) {
+  return {
+    class: "special",
+    consumed: input[0] === "#" ? 1 : 0,
+    value: input[0]
+  };
 }
 
 function asterix(input) {

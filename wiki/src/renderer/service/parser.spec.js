@@ -47,6 +47,22 @@ describe("Compile", () => {
         }
       ]
     }));
+  it("parses '*ab*' as italic", () =>
+    expect(compile(["*", "ab", "*"])).toEqual({
+      class: "line",
+      consumed: 3,
+      value: [
+        {
+          class: "italic",
+          consumed: 3,
+          value: [
+            { class: "special", consumed: 1, value: "*" },
+            { class: "text", consumed: 1, value: "ab" },
+            { class: "special", consumed: 1, value: "*" }
+          ]
+        }
+      ]
+    }));
   it("parses '__ab__' as bold", () =>
     expect(compile(["_", "_", "ab", "_", "_"])).toEqual({
       class: "line",
@@ -121,6 +137,63 @@ describe("Compile", () => {
         { class: "text", consumed: 1, value: "a" },
         { class: "text", consumed: 1, value: "_" },
         { class: "text", consumed: 1, value: "s" }
+      ]
+    }));
+  it("parses '#asd' as heading", () =>
+    expect(compile(["#", "asd"])).toEqual({
+      class: "line",
+      consumed: 2,
+      value: [
+        {
+          class: "heading",
+          consumed: 2,
+          value: [
+            { class: "special", consumed: 1, value: "#" },
+            {
+              class: "text",
+              consumed: 1,
+              value: "asd"
+            }
+          ]
+        }
+      ]
+    }));
+  it("doesn't parse 'a#sd' as heading", () =>
+    expect(compile(["a", "#", "sd"])).toEqual({
+      class: "line",
+      consumed: 3,
+      value: [
+        { class: "text", consumed: 1, value: "a" },
+        { class: "text", consumed: 1, value: "#" },
+        { class: "text", consumed: 1, value: "sd" }
+      ]
+    }));
+  it("parses '#as_qw_' as heading with italics", () =>
+    expect(compile(["#", "as", "_", "qw", "_"])).toEqual({
+      class: "line",
+      consumed: 5,
+      value: [
+        {
+          class: "heading",
+          consumed: 5,
+          value: [
+            { class: "special", consumed: 1, value: "#" },
+            {
+              class: "text",
+              consumed: 1,
+              value: "as"
+            },
+            {
+              class: "italic",
+              consumed: 3,
+              value: [
+                { class: "special", consumed: 1, value: "_" },
+                { class: "text", consumed: 1, value: "qw" },
+                { class: "special", consumed: 1, value: "_" }
+              ]
+            }
+          ]
+        }
       ]
     }));
 });
