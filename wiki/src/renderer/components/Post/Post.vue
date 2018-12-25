@@ -2,6 +2,7 @@
   <main :key="fileName">
     <div class="post">
       <div class="path">{{fileName}}</div>
+      <span></span>
       {{data}}
     </div>
     <div class="info">
