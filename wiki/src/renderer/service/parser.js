@@ -42,7 +42,7 @@ function compile(tokens) {
       heading,
       {
         op: onceOrMore,
-        rules: [{ op: or, rules: [bold, italic, chars(/.*/, false)] }]
+        rules: [{ op: or, rules: [tag, bold, italic, chars(/.*/, false)] }]
       }
     ]
   });
@@ -177,20 +177,20 @@ function tag(input) {
   return rule(input, "tag", {
     op: and,
     rules: [
-      at,
-      text,
+      chars(/^@$/, true),
+      chars(/^[a-zA-Z]*$/, true),
       {
         op: onceOrMore,
         rules: [
           {
             op: and,
             rules: [
-              openBracket,
+              chars(/^\[$/, true),
               {
                 op: onceOrMore,
-                rules: [text]
+                rules: [chars(/^[^\]\[]]*/, true)]
               },
-              closeBracket
+              chars(/^\]$/, true)
             ]
           }
         ]
@@ -220,5 +220,6 @@ module.exports = {
   onceOrMore,
   italic,
   bold,
-  chars
+  chars,
+  tag
 };

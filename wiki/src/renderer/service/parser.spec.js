@@ -6,7 +6,8 @@ const {
   onceOrMore,
   italic,
   bold,
-  chars
+  chars,
+  tag
 } = require("./parser");
 
 describe("Compile", () => {
@@ -308,6 +309,41 @@ describe("Compile", () => {
               class: "special",
               consumed: 1,
               value: "_"
+            }
+          ]
+        });
+      });
+    });
+    describe("Tag", () => {
+      it("maps out a tag", () => {
+        expect(tag(["@", "info", "[", "data", "]"])).toEqual({
+          class: "tag",
+          consumed: 5,
+          value: [
+            {
+              class: "special",
+              consumed: 1,
+              value: "@"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "info"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "["
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "data"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "]"
             }
           ]
         });
