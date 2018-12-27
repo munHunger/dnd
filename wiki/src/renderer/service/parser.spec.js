@@ -13,13 +13,16 @@ const {
 
 describe("Compile", () => {
   describe("Atomics", () => {
-    describe("Text", () =>
+    describe("Text", () => {
       it("classifies text as is", () =>
         expect(text(["qwer"])).toEqual({
           class: "text",
           consumed: 1,
           value: "qwer"
-        })));
+        }));
+      it("doesn't consume empty input", () =>
+        expect(text([])).toEqual({ consumed: 0 }));
+    });
     describe("Underscore", () => {
       it("consumes underscore as special", () =>
         expect(underscore(["_"])).toEqual({

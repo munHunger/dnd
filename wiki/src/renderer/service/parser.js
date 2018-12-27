@@ -39,23 +39,11 @@ function tokenize(line) {
 
 function compile(tokens) {
   let result = rule(tokens, "line", {
-    op: onceOrMore,
+    op: or,
     rules: [
-      {
-        op: or,
-        rules: [
-          {
-            op: and,
-            rules: [heading, { op: or, rules: [bold, italic, text] }]
-          },
-          { op: or, rules: [bold, italic, text] }
-        ]
-      }
+      heading,
+      { op: onceOrMore, rules: [{ op: or, rules: [bold, italic, text] }] }
     ]
-  });
-  result = rule(tokens, "line", {
-    op: onceOrMore,
-    rules: [{ op: or, rules: [bold, italic, text] }]
   });
   return result;
 }
@@ -105,9 +93,9 @@ function onceOrMore(rules, input) {
   let res = isFunction(rules[0])
     ? rules[0].call(this, input)
     : rule(input, undefined, rules[0]);
-  let consumed = res.consumed;
   if (!isFunction(rules[0])) res = res.value ? res.value : [{ consumed: 0 }];
   else res = [res];
+  let consumed = res.reduce((acc, val) => acc + val.consumed, 0);
   if (consumed > 0 && input.length - consumed > 0) {
     let rec = onceOrMore(rules, input.slice(consumed));
     return res.concat(rec.filter(r => r.consumed > 0));
@@ -140,7 +128,10 @@ function isFunction(functionToCheck) {
 function heading(input) {
   return rule(input, "heading", {
     op: and,
-    rules: [hash, text]
+    rules: [
+      hash,
+      { op: onceOrMore, rules: [{ op: or, rules: [bold, italic, text] }] }
+    ]
   });
 }
 
@@ -172,6 +163,14 @@ function hash(input) {
   };
 }
 
+function space(input) {
+  return {
+    class: "special",
+    consumed: input[0] === " " ? 1 : 0,
+    value: input[0]
+  };
+}
+
 function asterix(input) {
   return {
     class: "special",
@@ -189,6 +188,7 @@ function underscore(input) {
 }
 
 function text(input) {
+  if (input.length == 0) return { consumed: 0 };
   return { class: "text", consumed: 1, value: input[0] };
 }
 
