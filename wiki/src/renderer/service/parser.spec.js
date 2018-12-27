@@ -1,6 +1,298 @@
-const { parse, tokenize, compile } = require("./parser");
+const {
+  parse,
+  tokenize,
+  compile,
+  text,
+  underscore,
+  and,
+  or,
+  onceOrMore,
+  italic,
+  bold
+} = require("./parser");
 
 describe("Compile", () => {
+  describe("Atomics", () => {
+    describe("Text", () =>
+      it("classifies text as is", () =>
+        expect(text(["qwer"])).toEqual({
+          class: "text",
+          consumed: 1,
+          value: "qwer"
+        })));
+    describe("Underscore", () => {
+      it("consumes underscore as special", () =>
+        expect(underscore(["_"])).toEqual({
+          class: "special",
+          consumed: 1,
+          value: "_"
+        }));
+      it("doesn't consume text", () =>
+        expect(underscore(["u"])).toEqual({
+          class: "special",
+          consumed: 0,
+          value: "u"
+        }));
+    });
+  });
+
+  describe("Operations", () => {
+    describe("And", () => {
+      describe("Using atomics", () => {
+        it("returns a list of results from atomic rules", () => {
+          expect(and([text, underscore], ["aqwe", "as"])).toEqual([
+            {
+              class: "text",
+              consumed: 1,
+              value: "aqwe"
+            },
+            {
+              class: "special",
+              consumed: 0,
+              value: "as"
+            }
+          ]);
+        });
+        it("moves the array pointer per consumed rule", () => {
+          expect(and([text, underscore], ["aqwe", "_"])).toEqual([
+            {
+              class: "text",
+              consumed: 1,
+              value: "aqwe"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]);
+          expect(and([underscore, text], ["aqwe", "_"])).toEqual([
+            {
+              class: "special",
+              consumed: 0,
+              value: "aqwe"
+            },
+            {
+              class: "text",
+              consumed: 1,
+              value: "aqwe"
+            }
+          ]);
+        });
+      });
+      describe("Using operations", () => {
+        it("Flat maps the result", () => {
+          expect(
+            and(
+              [underscore, { op: and, rules: [text, underscore] }],
+              ["_", "a", "_"]
+            )
+          ).toEqual([
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            },
+            {
+              class: "text",
+              consumed: 1,
+              value: "a"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]);
+        });
+      });
+    });
+    describe("Or", () => {
+      it("returns a list even if nothing is found", () => {
+        expect(or([underscore], ["a"])).toEqual([{ consumed: 0 }]);
+      });
+      describe("Using atomics", () => {
+        it("returns the first matching rule", () => {
+          expect(or([text, underscore], ["aqwe"])).toEqual([
+            {
+              class: "text",
+              consumed: 1,
+              value: "aqwe"
+            }
+          ]);
+          expect(or([underscore, text], ["aqwe"])).toEqual([
+            {
+              class: "text",
+              consumed: 1,
+              value: "aqwe"
+            }
+          ]);
+        });
+      });
+      describe("Using operations", () => {
+        it("Flat maps the result", () => {
+          expect(
+            or([underscore, { op: or, rules: [underscore, text] }], ["a"])
+          ).toEqual([
+            {
+              class: "text",
+              consumed: 1,
+              value: "a"
+            }
+          ]);
+        });
+      });
+    });
+    describe("Once or more", () => {
+      describe("Using atomics", () => {
+        it("can consume only one", () => {
+          expect(onceOrMore([underscore], ["_"])).toEqual([
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]);
+        });
+
+        it("iterates until it can't consume", () => {
+          expect(onceOrMore([underscore], ["_", "_", "qwe"])).toEqual([
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]);
+        });
+        it("only runns the first rule", () => {
+          expect(onceOrMore([underscore, text], ["_", "_", "qwe"])).toEqual([
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]);
+        });
+      });
+      describe("Using operations", () => {
+        it("works recursivly", () => {
+          expect(
+            onceOrMore(
+              [{ op: onceOrMore, rules: [underscore] }],
+              ["_", "_", "qwe"]
+            )
+          ).toEqual([
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]);
+        });
+        it("flatmaps result", () => {
+          expect(
+            onceOrMore([{ op: or, rules: [underscore] }], ["_", "_", "qwe"])
+          ).toEqual([
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]);
+        });
+      });
+    });
+  });
+
+  describe("Rules", () => {
+    describe("Italics", () => {
+      it("parses '_a_' as italic", () => {
+        expect(italic(["_", "a", "_"])).toEqual({
+          class: "italic",
+          consumed: 3,
+          value: [
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            },
+            {
+              class: "text",
+              consumed: 1,
+              value: "a"
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]
+        });
+      });
+    });
+    describe("Bold", () => {
+      it("parses '__a__' as bold", () => {
+        expect(bold(["_", "_", "a", "_", "_"])).toEqual({
+          class: "bold",
+          consumed: 5,
+          value: [
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            },
+            {
+              class: "italic",
+              consumed: 3,
+              value: [
+                {
+                  class: "special",
+                  consumed: 1,
+                  value: "_"
+                },
+                {
+                  class: "text",
+                  consumed: 1,
+                  value: "a"
+                },
+                {
+                  class: "special",
+                  consumed: 1,
+                  value: "_"
+                }
+              ]
+            },
+            {
+              class: "special",
+              consumed: 1,
+              value: "_"
+            }
+          ]
+        });
+      });
+    });
+  });
+
   it("parses a single non special entry as text", () =>
     expect(compile(["hello"])).toEqual({
       class: "line",

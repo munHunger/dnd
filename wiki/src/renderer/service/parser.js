@@ -38,45 +38,39 @@ function tokenize(line) {
 }
 
 function compile(tokens) {
-  let parts = [];
-  while (tokens.length > 0) {
-    let part = or([heading, bold, italic, text], tokens);
-    if (part.consumed == 0) throw error;
-    parts.push(part);
-    tokens = tokens.slice(part.consumed);
-  }
-  // rule(tokens, "line", {
-  //   op: or,
-  //   rules: [
-  //     { op: and, rules: [heading, { op: or, rules: [bold, italic, text] }] },
-  //     { op: or, rules: [bold, italic, text] }
-  //   ]
-  // });
-  return {
-    class: "line",
-    consumed: parts.reduce((acc, val) => acc + val.consumed, 0),
-    value: parts
-  };
+  let result = rule(tokens, "line", {
+    op: onceOrMore,
+    rules: [
+      {
+        op: or,
+        rules: [
+          {
+            op: and,
+            rules: [heading, { op: or, rules: [bold, italic, text] }]
+          },
+          { op: or, rules: [bold, italic, text] }
+        ]
+      }
+    ]
+  });
+  result = rule(tokens, "line", {
+    op: onceOrMore,
+    rules: [{ op: or, rules: [bold, italic, text] }]
+  });
+  return result;
 }
 
 function rule(input, name, rule) {
   let parts = rule.op.call(this, rule.rules, input);
 
-  if (Array.isArray(parts)) {
-    if (parts.filter(part => part.consumed === 0).length > 0)
-      return { consumed: 0 };
+  if (parts.filter(part => part.consumed === 0).length > 0)
+    return { consumed: 0 };
 
-    return {
-      class: name,
-      consumed: parts.reduce((acc, val) => acc + val.consumed, 0),
-      value: parts
-    };
-  } else
-    return {
-      class: name,
-      consumed: parts.consumed,
-      value: parts.value
-    };
+  return {
+    class: name,
+    consumed: parts.reduce((acc, val) => acc + val.consumed, 0),
+    value: parts
+  };
 }
 
 function and(rules, input) {
@@ -97,7 +91,7 @@ function and(rules, input) {
         input.slice(
           Math.min(acc.reduce((a, v) => a + v.consumed, 0), input.length)
         ),
-        "and",
+        undefined,
         val
       );
       if (res.consumed === 0) acc.push(res);
@@ -107,17 +101,34 @@ function and(rules, input) {
   }, []);
 }
 
+function onceOrMore(rules, input) {
+  let res = isFunction(rules[0])
+    ? rules[0].call(this, input)
+    : rule(input, undefined, rules[0]);
+  let consumed = res.consumed;
+  if (!isFunction(rules[0])) res = res.value ? res.value : [{ consumed: 0 }];
+  else res = [res];
+  if (consumed > 0 && input.length - consumed > 0) {
+    let rec = onceOrMore(rules, input.slice(consumed));
+    return res.concat(rec.filter(r => r.consumed > 0));
+  }
+  return res;
+}
+
 function or(rules, input) {
   let res = rules
     .map(val => {
       if (isFunction(val)) return val.call(this, input);
       else {
-        let res = rule(input, "or", val);
-        return res;
+        let r = rule(input, undefined, val);
+        if (r.value && r.value.filter(part => part.consumed == 0).length == 0) {
+          return r.value;
+        } else return { consumed: 0 };
       }
     })
-    .filter(part => part.consumed > 0);
-  return res.length > 0 ? res[0] : { consumed: 0 };
+    .filter(part => Array.isArray(part) || part.consumed > 0);
+  if (res.length > 0) return Array.isArray(res[0]) ? res[0] : [res[0]];
+  else return [{ consumed: 0 }];
 }
 
 function isFunction(functionToCheck) {
@@ -201,4 +212,16 @@ function parseMD(line, test) {
   }
 }
 
-module.exports = { tokenize, parse, compile };
+module.exports = {
+  tokenize,
+  parse,
+  compile,
+  rule,
+  and,
+  or,
+  onceOrMore,
+  italic,
+  bold,
+  text,
+  underscore
+};
