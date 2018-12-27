@@ -188,7 +188,7 @@ function tag(input) {
               chars(/^\[$/, true),
               {
                 op: onceOrMore,
-                rules: [chars(/^[^\]\[]]*/, true)]
+                rules: [chars(/^[^\][]]*/, true)]
               },
               chars(/^\]$/, true)
             ]
