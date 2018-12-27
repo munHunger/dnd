@@ -15,7 +15,7 @@ function parse(input) {
         val.class === "text"
       )
         acc[acc.length - 1].value += val.value;
-      acc.push(val);
+      else acc.push(val);
       return acc;
     }, []);
   return input;
