@@ -1,3 +1,4 @@
+const specialChars = "#*_@[] ".split("");
 function parse(input) {
   if (!Array.isArray(input.value)) return input;
   input.value = input.value
@@ -21,7 +22,6 @@ function parse(input) {
 }
 
 function tokenize(line) {
-  let specialChars = "#*_".split("");
   return line.split("").reduce((acc, val) => {
     if (
       specialChars.indexOf(val) > -1 ||
@@ -40,7 +40,10 @@ function compile(tokens) {
     op: or,
     rules: [
       heading,
-      { op: onceOrMore, rules: [{ op: or, rules: [bold, italic, text] }] }
+      {
+        op: onceOrMore,
+        rules: [{ op: or, rules: [bold, italic, chars(/.*/, false)] }]
+      }
     ]
   });
   return result;
@@ -127,8 +130,11 @@ function heading(input) {
   return rule(input, "heading", {
     op: and,
     rules: [
-      hash,
-      { op: onceOrMore, rules: [{ op: or, rules: [bold, italic, text] }] }
+      chars(/^#$/, true),
+      {
+        op: onceOrMore,
+        rules: [{ op: or, rules: [bold, italic, chars(/.*/, false)] }]
+      }
     ]
   });
 }
@@ -137,8 +143,8 @@ function bold(input) {
   return rule(input, "bold", {
     op: or,
     rules: [
-      { op: and, rules: [underscore, italic, underscore] },
-      { op: and, rules: [asterix, italic, asterix] }
+      { op: and, rules: [chars(/^_$/, true), italic, chars(/^_$/, true)] },
+      { op: and, rules: [chars(/^\*$/, true), italic, chars(/^\*$/, true)] }
     ]
   });
 }
@@ -147,39 +153,61 @@ function italic(input) {
   return rule(input, "italic", {
     op: or,
     rules: [
-      { op: and, rules: [underscore, text, underscore] },
-      { op: and, rules: [asterix, text, asterix] }
+      {
+        op: and,
+        rules: [
+          chars(/^_$/, true),
+          { op: onceOrMore, rules: [chars(/^[^_]*$/, false)] },
+          chars(/^_$/, true)
+        ]
+      },
+      {
+        op: and,
+        rules: [
+          chars(/^\*$/, true),
+          { op: onceOrMore, rules: [chars(/^[^*]*$/, false)] },
+          chars(/^\*$/, true)
+        ]
+      }
     ]
   });
 }
 
-function hash(input) {
-  return {
-    class: "special",
-    consumed: input[0] === "#" ? 1 : 0,
-    value: input[0]
-  };
+function tag(input) {
+  return rule(input, "tag", {
+    op: and,
+    rules: [
+      at,
+      text,
+      {
+        op: onceOrMore,
+        rules: [
+          {
+            op: and,
+            rules: [
+              openBracket,
+              {
+                op: onceOrMore,
+                rules: [text]
+              },
+              closeBracket
+            ]
+          }
+        ]
+      }
+    ]
+  });
 }
 
-function asterix(input) {
-  return {
-    class: "special",
-    consumed: input[0] === "*" ? 1 : 0,
-    value: input[0]
+function chars(regex, isSpecial) {
+  return input => {
+    if (input.length == 0 || !regex.test(input[0])) return { consumed: 0 };
+    return {
+      class: isSpecial ? "special" : "text",
+      consumed: 1,
+      value: input[0]
+    };
   };
-}
-
-function underscore(input) {
-  return {
-    class: "special",
-    consumed: input[0] === "_" ? 1 : 0,
-    value: input[0]
-  };
-}
-
-function text(input) {
-  if (input.length == 0) return { consumed: 0 };
-  return { class: "text", consumed: 1, value: input[0] };
 }
 
 module.exports = {
@@ -192,6 +220,5 @@ module.exports = {
   onceOrMore,
   italic,
   bold,
-  text,
-  underscore
+  chars
 };
