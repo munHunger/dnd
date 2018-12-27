@@ -1,25 +1,23 @@
 function parse(input) {
-  return input.reduce(
-    (acc, val) => {
-      if (val.startsWith("@")) {
-        let list = [];
-        let tmp = val;
-        let start = tmp.indexOf("[");
-        let end = tmp.indexOf("]");
-        while (start >= 0 && end >= 0) {
-          list.push(tmp.substring(start + 1, end));
-          tmp = tmp.substring(end + 1);
-          start = tmp.indexOf("[");
-          end = tmp.indexOf("]");
-        }
-        acc.info.push({ name: list[0], data: list.splice(1) });
-      } else {
-        acc.data.push(parseMD(val));
-      }
+  if (!Array.isArray(input.value)) return input;
+  input.value = input.value
+    .map(val => parse(val))
+    .map(val => {
+      if (val.class === "italic" && input.class === "bold") val.class = "text";
+      return val;
+    })
+    .filter(val => val && val.class !== "special")
+    .reduce((acc, val) => {
+      if (
+        acc.length > 0 &&
+        acc[acc.length - 1].class === "text" &&
+        val.class === "text"
+      )
+        acc[acc.length - 1].value += val.value;
+      acc.push(val);
       return acc;
-    },
-    { data: [], info: [] }
-  );
+    }, []);
+  return input;
 }
 
 function tokenize(line) {
@@ -163,14 +161,6 @@ function hash(input) {
   };
 }
 
-function space(input) {
-  return {
-    class: "special",
-    consumed: input[0] === " " ? 1 : 0,
-    value: input[0]
-  };
-}
-
 function asterix(input) {
   return {
     class: "special",
@@ -190,26 +180,6 @@ function underscore(input) {
 function text(input) {
   if (input.length == 0) return { consumed: 0 };
   return { class: "text", consumed: 1, value: input[0] };
-}
-
-function replace(list, pattern, replacement) {}
-
-function parseMD(line, test) {
-  let c = "text";
-  if (line.startsWith("# ")) {
-    c = "h1";
-    line = line.substring(2);
-  } else if (/\*.*\*/gm.test(line)) {
-    c = "italic";
-    line = line.substring(1, line.length - 1);
-  }
-  let ret = { class: c, text: line };
-  if (test && JSON.stringify(ret) === JSON.stringify(test)) return ret;
-  else {
-    child = parseMD(line, ret);
-    if (child.class === "text") return ret;
-    return { class: c, next: child };
-  }
 }
 
 module.exports = {

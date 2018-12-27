@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Post from "./Post/Post";
+import Post from "./post/Post";
 
 export default {
   name: "landing-page",

@@ -20,6 +20,8 @@ module.exports = {
     "no-path-concat": 0,
     // allow paren-less arrow functions
     "arrow-parens": 0,
+    curly: 0,
+    eqeqeq: 0,
     // allow async-await
     "generator-star-spacing": 0,
     // allow debugger during development

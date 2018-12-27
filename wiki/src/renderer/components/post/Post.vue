@@ -1,34 +1,28 @@
 <template>
   <main :key="fileName">
     <div class="post">
-      <div class="path">{{fileName}}</div>
-      <span></span>
-      {{data}}
-    </div>
-    <div class="info">
-      <div v-for="item in info" v-bind:key="item.name">
-        <div class="field">
-          <div class="heading">{{item.name}}</div>
-          <div class="data">
-            <div v-for="field in item.data" v-bind:key="field" class="field">{{field}}</div>
-          </div>
-        </div>
-      </div>
+      <div class="path">{{fileName}}</div>post:
+      <p v-for="paragraph of paragraphs" :key="paragraph">
+        <markdown v-for="part of paragraph.value" :key="part.class" :input="part"></markdown>
+      </p>
     </div>
   </main>
 </template>
 
 <script>
-const { parse } = require("@/service/parser");
+import Markdown from "./markdown/Markdown";
+const { parse, compile, tokenize } = require("@/service/parser");
 const fs = require("fs");
 export default {
+  components: { Markdown },
   props: ["fileName"],
   data() {
-    return parse(
-      fs
+    return {
+      paragraphs: fs
         .readFileSync(__dirname + "/../../assets/" + this.fileName, "utf8")
         .split("\n")
-    );
+        .map(line => parse(compile(tokenize(line))))
+    };
   }
 };
 </script>
