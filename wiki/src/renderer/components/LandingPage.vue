@@ -22,6 +22,7 @@ export default {
 
 <style>
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
+@import url("https://fonts.googleapis.com/css?family=Roboto+Mono");
 
 * {
   box-sizing: border-box;
@@ -30,12 +31,12 @@ export default {
 }
 
 body {
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Roboto Mono", monospace;
 }
 
 #wrapper {
-  background-color: #494a4b;
-  color: aliceblue;
+  background-color: #1c1d20;
+  color: #ccdbdc;
   height: 100vh;
   padding: 60px 80px;
   width: 100vw;

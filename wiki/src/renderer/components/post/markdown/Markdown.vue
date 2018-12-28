@@ -24,12 +24,16 @@ main {
   display: inline;
 }
 .heading {
-  font-size: 22px;
+  color: #2dba8a;
+  font-weight: 900;
+  font-size: 40px;
 }
 .italic {
   font-style: italic;
+  color: #e63462;
 }
 .bold {
   font-weight: 900;
+  color: #fe5f55;
 }
 </style>

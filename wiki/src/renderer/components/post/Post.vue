@@ -48,12 +48,13 @@ export default {
 .path {
   padding: 10px;
   font-style: italic;
+  color: #b8d8ba;
 }
 .info {
   padding: 15px;
   margin: 15px;
-  color: bisque;
-  border-left: 1px solid bisque;
+  color: #2dba8a;
+  border-left: 1px solid #2dba8a;
 }
 .info .data .field {
   margin-bottom: 5px;
@@ -61,5 +62,7 @@ export default {
 .info .heading {
   font-weight: 600;
   margin-top: 15px;
+  font-size: 20px;
+  color: #ccd7c5;
 }
 </style>
