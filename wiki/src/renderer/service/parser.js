@@ -1,13 +1,28 @@
 const specialChars = "#*_@[] ".split("");
 function parse(input) {
-  if (!Array.isArray(input.value)) return input;
-  input.value = input.value
-    .map(val => parse(val))
+  if (!Array.isArray(input.value)) return { md: input, tags: [] };
+  let prepared = input.value.map(val => parse(val));
+  let tags = prepared
+    .map(val => val.tags)
+    .reduce((acc, val) => acc.concat(val), []);
+  if (input.class === "tag")
+    return {
+      md: input,
+      tags: input.value
+        .reduce((acc, val) => {
+          if (val.class === "special") acc.push("");
+          else acc[acc.length - 1] += val.value;
+          return acc;
+        }, [])
+        .filter(t => t.length > 0)
+    };
+  input.value = prepared
+    .map(val => val.md)
     .map(val => {
       if (val.class === "italic" && input.class === "bold") val.class = "text";
       return val;
     })
-    .filter(val => val && val.class !== "special")
+    .filter(val => val && val.class !== "special" && val.class !== "tag")
     .reduce((acc, val) => {
       if (
         acc.length > 0 &&
@@ -18,7 +33,7 @@ function parse(input) {
       else acc.push(val);
       return acc;
     }, []);
-  return input;
+  return { md: input, tags: tags };
 }
 
 function tokenize(line) {
@@ -178,7 +193,7 @@ function tag(input) {
     op: and,
     rules: [
       chars(/^@$/, true),
-      chars(/^[a-zA-Z]*$/, true),
+      chars(/^[a-zA-Z]*$/, false),
       {
         op: onceOrMore,
         rules: [
@@ -188,7 +203,7 @@ function tag(input) {
               chars(/^\[$/, true),
               {
                 op: onceOrMore,
-                rules: [chars(/^[^\][]]*/, true)]
+                rules: [chars(/^[^\][]]*/, false)]
               },
               chars(/^\]$/, true)
             ]

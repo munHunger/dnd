@@ -1,10 +1,20 @@
 <template>
   <main :key="fileName">
     <div class="post">
-      <div class="path">{{fileName}}</div>post:
+      <div class="path">{{fileName}}</div>
       <p v-for="paragraph of paragraphs" :key="paragraph">
         <markdown v-for="part of paragraph.value" :key="part.class" :input="part"></markdown>
       </p>
+    </div>
+    <div class="info">
+      <div v-for="item in tags" v-bind:key="item[1]">
+        <div v-if="item[0] === 'i'">
+          <div class="heading">{{item[1]}}</div>
+          <div class="data">
+            <div v-for="field in item.slice(2)" v-bind:key="field" class="field">{{field}}</div>
+          </div>
+        </div>
+      </div>
     </div>
   </main>
 </template>
@@ -17,11 +27,13 @@ export default {
   components: { Markdown },
   props: ["fileName"],
   data() {
+    let parsed = fs
+      .readFileSync(__dirname + "/../../assets/" + this.fileName, "utf8")
+      .split("\n")
+      .map(line => parse(compile(tokenize(line))));
     return {
-      paragraphs: fs
-        .readFileSync(__dirname + "/../../assets/" + this.fileName, "utf8")
-        .split("\n")
-        .map(line => parse(compile(tokenize(line))))
+      paragraphs: parsed.map(p => p.md),
+      tags: parsed.map(p => p.tags).filter(tag => tag.length > 0)
     };
   }
 };

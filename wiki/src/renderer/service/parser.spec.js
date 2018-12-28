@@ -326,7 +326,7 @@ describe("Compile", () => {
               value: "@"
             },
             {
-              class: "special",
+              class: "text",
               consumed: 1,
               value: "info"
             },
@@ -336,7 +336,7 @@ describe("Compile", () => {
               value: "["
             },
             {
-              class: "special",
+              class: "text",
               consumed: 1,
               value: "data"
             },
