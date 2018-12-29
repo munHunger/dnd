@@ -10,7 +10,8 @@
 <script>
 import Post from "./post/Post";
 import Search from "./search/Search";
-
+const { indexFolder } = require("@/service/indexer");
+console.log(indexFolder(__dirname + "/../assets/post/npc"));
 export default {
   name: "landing-page",
   components: { Post, Search },
