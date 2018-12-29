@@ -2,16 +2,18 @@
   <div id="wrapper">
     <main>
       <post file-name="post/npc/albertBerg.md"></post>
+      <search></search>
     </main>
   </div>
 </template>
 
 <script>
 import Post from "./post/Post";
+import Search from "./search/Search";
 
 export default {
   name: "landing-page",
-  components: { Post },
+  components: { Post, Search },
   methods: {
     open(link) {
       this.$electron.shell.openExternal(link);
