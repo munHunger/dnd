@@ -2,11 +2,14 @@ const fs = require("fs");
 const { parse, compile, tokenize } = require("@/service/parser");
 
 function indexFolder(folder) {
-  return fs.readdirSync(folder).map(item => {
-    var file = folder + "/" + item;
-    if (fs.statSync(file).isFile()) return indexFile(file);
-    else return indexFolder(file);
-  });
+  return fs
+    .readdirSync(folder)
+    .map(item => {
+      var file = folder + "/" + item;
+      if (fs.statSync(file).isFile()) return [indexFile(file)];
+      else return indexFolder(file);
+    })
+    .reduce((acc, val) => acc.concat(val), []);
 }
 
 function indexFile(path) {

@@ -1,5 +1,6 @@
 #Albert Berg
 
+@i[name][albert berg]
 @i[race][human]
 @i[sex][male]
 @i[age][87]
