@@ -1,9 +1,9 @@
 <template>
   <main :key="fileName">
     <div class="post">
-      <div class="path">{{fileName}}</div>
-      <p v-for="paragraph of paragraphs" :key="paragraph">
-        <markdown v-for="part of paragraph.value" :key="part.class" :input="part"></markdown>
+      <div class="path">{{fileName.substring(fileName.indexOf("assets"))}}</div>
+      <p v-for="(paragraph, pIndex) of paragraphs" :key="pIndex">
+        <markdown v-for="(part, index) of paragraph.value" :key="index" :input="part"></markdown>
       </p>
     </div>
     <div class="info">
@@ -27,14 +27,24 @@ export default {
   components: { Markdown },
   props: ["fileName"],
   data() {
-    let parsed = fs
-      .readFileSync(__dirname + "/../../assets/" + this.fileName, "utf8")
-      .split("\n")
-      .map(line => parse(compile(tokenize(line))));
     return {
-      paragraphs: parsed.map(p => p.md),
-      tags: parsed.map(p => p.tags).filter(tag => tag.length > 0)
+      paragraphs: [],
+      tags: []
     };
+  },
+  mounted() {
+    this.$watch(
+      "fileName",
+      fileName => {
+        let parsed = fs
+          .readFileSync(fileName, "utf8")
+          .split("\n")
+          .map(line => parse(compile(tokenize(line))));
+        this.paragraphs = parsed.map(p => p.md);
+        this.tags = parsed.map(p => p.tags).filter(tag => tag.length > 0);
+      },
+      { immediate: true }
+    );
   }
 };
 </script>

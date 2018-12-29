@@ -2,27 +2,26 @@
   <main>
     <div class="overlay"></div>
     <div class="content">
-      <div class="search">
-        <input type="text" autofocus>
+      <div class="search" v-cloak>
+        <input
+          ref="search"
+          type="text"
+          autofocus
+          v-on:input="update"
+          v-on:keyup.down="down"
+          v-on:keyup.up="up"
+          v-on:keyup.enter="select"
+        >
         <span class="search"></span>
       </div>
       <div class="results">
-        <div class="entry">
-          <div class="column">
-            <span class="name">Mary</span>
-            <span class="file">/post/npc/mary.md</span>
+        <div class="entry" v-for="(entry, i) of search" :key="entry.file">
+          <div class="column" :class="i === index ? 'active' : ''">
+            <span class="name">{{entry.name}}</span>
+            <span class="file">{{entry.file.substring(entry.file.indexOf("assets"))}}</span>
           </div>
           <div class="column">
-            <span class="tag">[#npc,#trader]</span>
-          </div>
-        </div>
-        <div class="entry active">
-          <div class="column">
-            <span class="name">Albert Berg</span>
-            <span class="file">/post/npc/albertBerg.md</span>
-          </div>
-          <div class="column">
-            <span class="tag">[#npc,#trader]</span>
+            <span class="tag">{{entry.tags.slice(0,4)}}</span>
           </div>
         </div>
       </div>
@@ -31,6 +30,30 @@
 </template>
 
 <script>
+const { search } = require("@/service/searcher");
+export default {
+  data() {
+    return { search: [], index: 0 };
+  },
+  mounted() {
+    this.$refs.search.focus();
+  },
+  methods: {
+    update({ type, target }) {
+      this.index = 0;
+      this.search = search(target.value).filter(entry => entry.similarity > 0);
+    },
+    up() {
+      this.index--;
+    },
+    down() {
+      this.index++;
+    },
+    select() {
+      this.$emit("selected", this.search[this.index].file);
+    }
+  }
+};
 </script>
 
 <style scoped>

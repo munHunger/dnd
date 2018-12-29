@@ -20,7 +20,14 @@ function indexFile(path) {
     .reduce((acc, val) => acc.concat(val), [])
     .map(tag => tag.toLowerCase());
 
-  return { file: path, tags: compiled };
+  let name = path.substring(path.lastIndexOf("/") + 1, path.lastIndexOf("."));
+  name = name.split(/(?=[A-Z])/).reduce((acc, val) => (acc += val + " "), "");
+  name = name.charAt(0).toUpperCase() + name.substring(1);
+  return {
+    file: path,
+    name: name,
+    tags: compiled
+  };
 }
 
 module.exports = {

@@ -1,10 +1,10 @@
 <template>
-  <main :key="input.class">
+  <main>
     <span :class="input.class">
       <markdown
         v-if="Array.isArray(input.value)"
-        v-for="child in input.value"
-        :key="child.class"
+        v-for="(child, index) in input.value"
+        :key="index"
         :input="child"
       ></markdown>
       <span v-if="!Array.isArray(input.value) && input.class === 'text'">{{input.value}}</span>
