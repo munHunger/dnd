@@ -1,7 +1,7 @@
 <template>
   <div id="wrapper">
     <main>
-      <post file-name="mary.md"></post>
+      <post file-name="post/npc/albertBerg.md"></post>
     </main>
   </div>
 </template>
