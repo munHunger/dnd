@@ -40,6 +40,9 @@ export default {
 </script>
 
 <style scoped>
+p {
+  margin-top: 15px;
+}
 .post {
 }
 .path::before {
@@ -48,7 +51,7 @@ export default {
 .path {
   padding: 10px;
   font-style: italic;
-  color: #b8d8ba;
+  color: #ec9ded;
 }
 .info {
   padding: 15px;
