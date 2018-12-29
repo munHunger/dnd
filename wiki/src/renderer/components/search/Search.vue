@@ -3,6 +3,7 @@
     <div class="overlay"></div>
     <div class="content">
       <div class="search" v-cloak>
+        >
         <input
           ref="search"
           type="text"
@@ -41,7 +42,9 @@ export default {
   methods: {
     update({ type, target }) {
       this.index = 0;
-      this.search = search(target.value).filter(entry => entry.similarity > 0);
+      this.search = search(target.value)
+        .filter(entry => entry.similarity > 0)
+        .slice(0, 8);
     },
     up() {
       this.index--;
@@ -80,6 +83,8 @@ export default {
   padding: 5px;
   border-bottom: 3px solid #2dba8a;
   color: #2dba8a;
+  font-size: 30px;
+  font-weight: 600;
 }
 
 .search input {
@@ -88,7 +93,7 @@ export default {
   outline: none;
   font-size: 30px;
   font-weight: 600;
-  width: 100%;
+  width: 90%;
   color: #2dba8a;
 }
 
