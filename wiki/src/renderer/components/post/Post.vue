@@ -50,6 +50,9 @@ export default {
 </script>
 
 <style scoped>
+main {
+  width: 100%;
+}
 p {
   margin-top: 15px;
 }

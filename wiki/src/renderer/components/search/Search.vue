@@ -13,7 +13,6 @@
           v-on:keyup.up="up"
           v-on:keyup.enter="select"
         >
-        <span class="search"></span>
       </div>
       <div class="results">
         <div class="entry" v-for="(entry, i) of search" :key="entry.file">
