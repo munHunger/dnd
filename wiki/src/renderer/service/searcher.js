@@ -1,7 +1,13 @@
 const { indexFolder } = require("@/service/indexer");
 var stringSimilarity = require("string-similarity");
 
-var index = indexFolder(__dirname + "/../assets/post");
+var index;
+
+function init() {
+  if (!this.index) {
+    this.index = indexFolder(__dirname + "/../assets/post");
+  }
+}
 
 function search(query) {
   return index
@@ -28,5 +34,6 @@ function search(query) {
 }
 
 module.exports = {
-  search
+  search,
+  init
 };

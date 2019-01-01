@@ -28,6 +28,9 @@ main {
   font-weight: 900;
   font-size: 40px;
 }
+.tag {
+  color: #5dd9c1;
+}
 .italic {
   font-style: italic;
   color: #e63462;
