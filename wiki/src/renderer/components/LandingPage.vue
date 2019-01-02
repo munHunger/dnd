@@ -2,6 +2,7 @@
   <div id="wrapper">
     <main>
       <post :file-name="post" v-if="post"></post>
+      <sound></sound>
       <search v-on:selected="select" v-if="search"></search>
       <span class="loading" v-if="loading">loading</span>
     </main>
@@ -11,6 +12,7 @@
 <script>
 import Post from "./post/Post";
 import Search from "./search/Search";
+import Sound from "./sound/Sound";
 import { setTimeout } from "timers";
 const { init } = require("@/service/searcher");
 export default {
@@ -18,7 +20,7 @@ export default {
     return { post: undefined, search: false, loading: false };
   },
   name: "landing-page",
-  components: { Post, Search },
+  components: { Post, Search, Sound },
   methods: {
     open(link) {
       this.$electron.shell.openExternal(link);
@@ -89,17 +91,11 @@ body {
 
 #wrapper {
   color: #ccdbdc;
-  height: 100vh;
   padding: 60px 80px;
-  width: 100vw;
 }
 
 main {
   display: flex;
   justify-content: space-between;
-}
-
-main > div {
-  flex-basis: 50%;
 }
 </style>

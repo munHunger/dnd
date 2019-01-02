@@ -1,0 +1,45 @@
+{
+  "name": "monster roar",
+  "sound": "roar/monsterRoar.wav",
+  "timeline": [
+    [
+      {
+        "time": 636,
+        "light": "1",
+        "color": [230, 150, 120, 1]
+      },
+      {
+        "time": 3200,
+        "light": "1",
+        "color": [190, 90, 50, 1]
+      },
+      {
+        "time": 5000,
+        "light": "1",
+        "color": [255, 210, 150, 0.1]
+      }
+    ],
+    [
+      {
+        "time": 700,
+        "light": "2",
+        "color": [60, 0, 60, 1]
+      },
+      {
+        "time": 3800,
+        "light": "2",
+        "color": [100, 15, 75, 1]
+      },
+      {
+        "time": 4500,
+        "light": "2",
+        "color": [125, 35, 140, 0.5]
+      },
+      {
+        "time": 5500,
+        "light": "2",
+        "color": [130, 70, 150, 0.1]
+      }
+    ]
+  ]
+}
