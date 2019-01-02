@@ -2,7 +2,6 @@
   <main>
     <div class="track">
       <div id="waveform"></div>
-      <br>
       <div class="timeline" v-for="(track, index) of timeline" :key="index">
         <span
           class="light"
@@ -21,6 +20,7 @@ const fs = require("fs");
 const Hue = require("philips-hue");
 
 export default {
+  props: ["src"],
   data() {
     return { timeline: {}, duration: 10000 };
   },
@@ -68,51 +68,50 @@ export default {
       let hueConfig = JSON.parse(fs.readFileSync(configFile));
       hue.bridge = hueConfig.bridge;
       hue.username = hueConfig.username;
-      hue.light(4).setState({ on: true, hue: 51881, sat: 92, bri: 90 });
     }
     this.$nextTick(() => {
-      fs.readFile(
-        "src/renderer/assets/sound/roar/monsterRoar.json",
-        (err, data) => {
-          if (err) throw err;
-          data = JSON.parse(data);
-          var wavesurfer = WaveSurfer.create({
-            container: "#waveform",
-            waveColor: "#2dba8a",
-            progressColor: "#5dd9c1"
+      fs.readFile("src/renderer/assets/sound/" + this.src, (err, data) => {
+        if (err) throw err;
+        data = JSON.parse(data);
+        var wavesurfer = WaveSurfer.create({
+          container: "#waveform",
+          waveColor: "#2dba8a",
+          progressColor: "#5dd9c1",
+          cursorWidth: 0
+        });
+        wavesurfer.load("src/renderer/assets/sound/" + data.sound);
+        this.timeline = data.timeline;
+        wavesurfer.on("ready", () => {
+          wavesurfer.play();
+          this.duration = wavesurfer.getDuration() * 1000;
+        });
+        wavesurfer.on("finish", () => {
+          this.$emit("done", this.src);
+        });
+        wavesurfer.on("audioprocess", () => {
+          let currentTime = wavesurfer.getCurrentTime() * 1000;
+          this.timeline.forEach(track => {
+            let frame = track.frames.filter(
+              frame => frame.time > currentTime
+            )[0];
+            if (frame && !frame.done) {
+              frame.done = true;
+              let hsl = this.rgbToHsl(
+                frame.color[0],
+                frame.color[1],
+                frame.color[2]
+              );
+              hue.light(track.light).setState({
+                on: true,
+                hue: Math.floor(hsl[0] * 65535),
+                sat: Math.floor(hsl[1] * 254),
+                bri: Math.floor(frame.color[3] * 254),
+                transitiontime: Math.floor(frame.transition / 100)
+              });
+            }
           });
-          wavesurfer.load("src/renderer/assets/sound/" + data.sound);
-          this.timeline = data.timeline;
-          wavesurfer.on("ready", () => {
-            setTimeout(() => wavesurfer.play(), 1000);
-
-            this.duration = wavesurfer.getDuration() * 1000;
-          });
-          wavesurfer.on("audioprocess", () => {
-            let currentTime = wavesurfer.getCurrentTime() * 1000;
-            this.timeline.forEach(track => {
-              let frame = track.frames.filter(
-                frame => frame.time > currentTime
-              )[0];
-              if (frame && !frame.done) {
-                frame.done = true;
-                let hsl = this.rgbToHsl(
-                  frame.color[0],
-                  frame.color[1],
-                  frame.color[2]
-                );
-                hue.light(track.light).setState({
-                  on: true,
-                  hue: Math.floor(hsl[0] * 65535),
-                  sat: Math.floor(hsl[1] * 254),
-                  bri: Math.floor(frame.color[3] * 254),
-                  transitiontime: 1
-                });
-              }
-            });
-          });
-        }
-      );
+        });
+      });
     });
   }
 };
@@ -135,6 +134,6 @@ export default {
 .timeline {
   display: inherit;
   width: 400px;
-  height: 50px;
+  height: 15px;
 }
 </style>

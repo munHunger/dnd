@@ -2,7 +2,7 @@
   <div id="wrapper">
     <main>
       <post :file-name="post" v-if="post"></post>
-      <sound></sound>
+      <action v-if="!loading && !search" :overlay="action" v-on:selected="action = false"></action>
       <search v-on:selected="select" v-if="search"></search>
       <span class="loading" v-if="loading">loading</span>
     </main>
@@ -12,15 +12,15 @@
 <script>
 import Post from "./post/Post";
 import Search from "./search/Search";
-import Sound from "./sound/Sound";
+import Action from "./action/Action";
 import { setTimeout } from "timers";
 const { init } = require("@/service/searcher");
 export default {
   data() {
-    return { post: undefined, search: false, loading: false };
+    return { post: undefined, search: false, loading: false, action: false };
   },
   name: "landing-page",
-  components: { Post, Search, Sound },
+  components: { Post, Search, Action },
   methods: {
     open(link) {
       this.$electron.shell.openExternal(link);
@@ -42,9 +42,10 @@ export default {
     window.addEventListener(
       "keypress",
       function(e) {
-        console.log(e);
         if (String.fromCharCode(e.keyCode) === " ") {
-          this.search = true;
+          if (!this.action) this.search = true;
+        } else if (e.key === "Enter") {
+          if (!this.search && !this.loading) this.action = true;
         }
       }.bind(this)
     );
