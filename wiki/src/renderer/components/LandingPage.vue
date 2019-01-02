@@ -3,7 +3,7 @@
     <main>
       <post :file-name="post" v-if="post"></post>
       <search v-on:selected="select" v-if="search"></search>
-      <span style="color:white" v-if="loading">loading</span>
+      <span class="loading" v-if="loading">loading</span>
     </main>
   </div>
 </template>
@@ -30,9 +30,10 @@ export default {
   },
   updated() {
     setTimeout(() => {
-      init();
-      this.loading = false;
-      this.search = true;
+      if (init()) {
+        this.loading = false;
+        this.search = true;
+      }
     }, 1000);
   },
   mounted() {
@@ -53,6 +54,27 @@ export default {
 <style>
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro");
 @import url("https://fonts.googleapis.com/css?family=Roboto+Mono");
+
+.loading {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    top: 0;
+  }
+  50% {
+    top: 100%;
+    opacity: 0;
+  }
+  51% {
+    top: -100%;
+  }
+  100% {
+    top: 0;
+    opacity: 1;
+  }
+}
 
 * {
   box-sizing: border-box;

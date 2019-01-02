@@ -41,6 +41,7 @@ export default {
   methods: {
     update({ type, target }) {
       this.index = 0;
+      console.log(search);
       this.search = search(target.value)
         .filter(entry => entry.similarity > 0)
         .slice(0, 8);

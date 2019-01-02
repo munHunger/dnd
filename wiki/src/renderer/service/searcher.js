@@ -4,12 +4,15 @@ var stringSimilarity = require("string-similarity");
 var index;
 
 function init() {
-  if (!this.index) {
-    this.index = indexFolder(__dirname + "/../assets/post");
+  if (!index) {
+    index = indexFolder(__dirname + "/../assets/post");
+    return true;
   }
+  return false;
 }
 
 function search(query) {
+  if (!index) return [];
   return index
     .map(post => {
       let sortedTags = post.tags
