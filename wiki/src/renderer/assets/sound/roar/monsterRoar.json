@@ -1,0 +1,71 @@
+{
+  "name": "monster roar",
+  "sound": "roar/monsterRoar.wav",
+  "timeline": [
+    {
+      "light": 4,
+      "frames": [
+        {
+          "time": 636,
+          "color": [230, 150, 120, 1],
+          "transition": 500
+        },
+        {
+          "time": 3200,
+          "color": [190, 90, 50, 1],
+          "transition": 2000
+        },
+        {
+          "time": 5000,
+          "color": [255, 210, 150, 0],
+          "transition": 1500
+        }
+      ]
+    },
+    {
+      "light": 5,
+      "frames": [
+        {
+          "time": 700,
+          "color": [60, 0, 60, 1],
+          "transition": 500
+        },
+        {
+          "time": 3800,
+          "color": [100, 15, 75, 1],
+          "transition": 3000
+        },
+        {
+          "time": 4500,
+          "color": [125, 35, 140, 0.5],
+          "transition": 500
+        },
+        {
+          "time": 5500,
+          "color": [130, 70, 150, 0],
+          "transition": 1000
+        }
+      ]
+    },
+    {
+      "light": 6,
+      "frames": [
+        {
+          "time": 700,
+          "color": [255, 255, 255, 1],
+          "transition": 500
+        },
+        {
+          "time": 4000,
+          "color": [255, 255, 255, 0.5],
+          "transition": 4000
+        },
+        {
+          "time": 5500,
+          "color": [255, 255, 255, 0],
+          "transition": 1000
+        }
+      ]
+    }
+  ]
+}

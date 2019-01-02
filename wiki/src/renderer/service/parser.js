@@ -22,7 +22,12 @@ function parse(input) {
       if (val.class === "italic" && input.class === "bold") val.class = "text";
       return val;
     })
-    .filter(val => val && val.class !== "special" && val.class !== "tag")
+    .filter(
+      val =>
+        val &&
+        val.class !== "special" &&
+        !(val.class === "tag" && val.value[1].value === "i")
+    )
     .reduce((acc, val) => {
       if (
         acc.length > 0 &&

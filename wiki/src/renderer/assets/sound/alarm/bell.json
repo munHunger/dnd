@@ -1,0 +1,96 @@
+{
+  "name": "Alarm bells",
+  "sound": "alarm/bell.wav",
+  "timeline": [
+    {
+      "light": 9,
+      "frames": [
+        {
+          "time": 600,
+          "color": [230, 160, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 5200,
+          "color": [230, 160, 130, 0.2],
+          "transition": 4000
+        },
+        {
+          "time": 5300,
+          "color": [230, 160, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 10200,
+          "color": [230, 160, 130, 0.2],
+          "transition": 4000
+        },
+        {
+          "time": 10300,
+          "color": [230, 160, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 15200,
+          "color": [230, 160, 130, 0.2],
+          "transition": 4000
+        },
+        {
+          "time": 15300,
+          "color": [230, 160, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 20000,
+          "color": [230, 160, 130, 0],
+          "transition": 4000
+        }
+      ]
+    },
+    {
+      "light": 8,
+      "frames": [
+        {
+          "time": 600,
+          "color": [230, 190, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 5200,
+          "color": [230, 190, 130, 0.2],
+          "transition": 4000
+        },
+        {
+          "time": 5300,
+          "color": [230, 190, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 10200,
+          "color": [230, 190, 130, 0.2],
+          "transition": 4000
+        },
+        {
+          "time": 10300,
+          "color": [230, 190, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 15200,
+          "color": [230, 190, 130, 0.2],
+          "transition": 4000
+        },
+        {
+          "time": 15300,
+          "color": [230, 190, 130, 1],
+          "transition": 50
+        },
+        {
+          "time": 20000,
+          "color": [230, 190, 130, 0],
+          "transition": 4000
+        }
+      ]
+    }
+  ]
+}
