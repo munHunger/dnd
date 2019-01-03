@@ -1,6 +1,6 @@
 <template>
   <main>
-    <sound v-for="(sound, index) of sounds" :key="index" :src="sound" v-on:done="completeSound"></sound>
+    <sound v-for="sound of sounds" :key="sound" :src="sound" v-on:done="completeSound"></sound>
 
     <div class="overlay" v-if="overlay"></div>
     <div class="content" v-if="overlay">
@@ -74,7 +74,7 @@ export default {
     completeSound(src) {
       this.sounds = this.sounds
         .slice(0, this.sounds.indexOf(src))
-        .concat(this.sounds.slice(this.sounds.indexOf(src) + 1));
+        .concat(this.sounds.slice(this.sounds.indexOf(src) + 1, 0));
     },
     update({ type, target }) {
       this.index = 0;

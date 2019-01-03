@@ -1,0 +1,54 @@
+{
+  "name": "Rain",
+  "sound": "rain/rain.wav",
+  "timeline": [
+    {
+      "light": 4,
+      "repeat": true,
+      "frames": [
+        {
+          "time": 0,
+          "color": [250, 250, 255, 0.6],
+          "transition": 300
+        },
+        {
+          "time": 700,
+          "color": [250, 245, 255, 0.7],
+          "transition": 700
+        }
+      ]
+    },
+    {
+      "light": 5,
+      "repeat": true,
+      "frames": [
+        {
+          "time": 0,
+          "color": [250, 250, 255, 0.6],
+          "transition": 600
+        },
+        {
+          "time": 600,
+          "color": [250, 245, 255, 0.7],
+          "transition": 300
+        }
+      ]
+    },
+    {
+      "light": 6,
+      "repeat": true,
+      "frames": [
+        {
+          "time": 0,
+          "color": [250, 250, 255, 0.6],
+          "transition": 800
+        },
+        {
+          "time": 800,
+          "color": [250, 245, 255, 0.7],
+          "transition": 800
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "name": "Rainforrest",
+  "sound": "forrest/rainforrest.wav",
+  "timeline": [
+    {
+      "light": 4,
+      "repeat": true,
+      "frames": [
+        {
+          "time": 0,
+          "color": [170, 253, 180, 1],
+          "transition": 1000
+        },
+        {
+          "time": 1500,
+          "color": [130, 253, 110, 1],
+          "transition": 1500
+        },
+        {
+          "time": 3000,
+          "color": [160, 253, 110, 1],
+          "transition": 1500
+        },
+        {
+          "time": 4500,
+          "color": [130, 253, 170, 1],
+          "transition": 1500
+        },
+        {
+          "time": 5500,
+          "color": [40, 253, 50, 1],
+          "transition": 1500
+        }
+      ]
+    },
+    {
+      "light": 5,
+      "repeat": true,
+      "frames": [
+        {
+          "time": 0,
+          "color": [120, 203, 140, 1],
+          "transition": 1000
+        },
+        {
+          "time": 1750,
+          "color": [30, 253, 10, 1],
+          "transition": 1750
+        },
+        {
+          "time": 4200,
+          "color": [180, 253, 120, 1],
+          "transition": 1500
+        },
+        {
+          "time": 5200,
+          "color": [100, 253, 140, 1],
+          "transition": 1500
+        }
+      ]
+    },
+    {
+      "light": 6,
+      "repeat": true,
+      "frames": [
+        {
+          "time": 0,
+          "color": [30, 253, 10, 1],
+          "transition": 1500
+        },
+        {
+          "time": 2050,
+          "color": [120, 203, 180, 1],
+          "transition": 1750
+        },
+        {
+          "time": 3200,
+          "color": [100, 253, 140, 1],
+          "transition": 1500
+        },
+        {
+          "time": 5200,
+          "color": [180, 253, 120, 1],
+          "transition": 1500
+        }
+      ]
+    }
+  ]
+}

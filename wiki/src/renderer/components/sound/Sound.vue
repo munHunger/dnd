@@ -84,6 +84,7 @@ export default {
         wavesurfer.on("ready", () => {
           wavesurfer.play();
           this.duration = wavesurfer.getDuration() * 1000;
+          console.log("starting play " + this.duration);
         });
         wavesurfer.on("finish", () => {
           this.$emit("done", this.src);
@@ -94,7 +95,19 @@ export default {
             let frame = track.frames.filter(
               frame => frame.time > currentTime
             )[0];
+            if (track.repeat) {
+              let max = Math.max.apply(
+                null,
+                track.frames.map(frame => frame.time)
+              );
+              frame = track.frames.sort(
+                (a, b) =>
+                  Math.abs(a.time - (currentTime % max)) -
+                  Math.abs(b.time - (currentTime % max))
+              )[0];
+            }
             if (frame && !frame.done) {
+              track.frames.forEach(frame => (frame.done = false));
               frame.done = true;
               let hsl = this.rgbToHsl(
                 frame.color[0],

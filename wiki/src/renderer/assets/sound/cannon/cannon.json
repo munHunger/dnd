@@ -1,0 +1,21 @@
+{
+  "name": "Cannon",
+  "sound": "cannon/cannon.wav",
+  "timeline": [
+    {
+      "light": 7,
+      "frames": [
+        {
+          "time": 10,
+          "color": [255, 0, 0, 1],
+          "transition": 100
+        },
+        {
+          "time": 450,
+          "color": [253, 253, 255, 1],
+          "transition": 200
+        }
+      ]
+    }
+  ]
+}
