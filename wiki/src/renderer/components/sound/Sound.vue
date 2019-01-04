@@ -18,6 +18,7 @@
 const WaveSurfer = require("wavesurfer.js");
 const fs = require("fs");
 const Hue = require("philips-hue");
+const { DeviceDiscovery } = require("sonos");
 
 export default {
   props: ["src"],
@@ -58,6 +59,13 @@ export default {
     }
   },
   mounted() {
+    DeviceDiscovery().once("DeviceAvailable", device => {
+      console.log("found device " + device);
+      device.play(
+        "http://ia801402.us.archive.org/20/items/TenD2005-07-16.flac16/TenD2005-07-16t10Wonderboy.mp3"
+      );
+    });
+
     var hue = new Hue();
     var configFile = process.env.HOME + "/.philips-hue.json";
     if (!fs.existsSync(configFile))
