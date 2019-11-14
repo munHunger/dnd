@@ -23,3 +23,8 @@ Roll of Bones
 Dragons & Dreams
 
 1000 g buy in. Draw a card(Deck of Many Things), see what happens.
+
+4 stories front facing windows on second +
+
+bar on 3rd floor close to the windows
+No weapons.

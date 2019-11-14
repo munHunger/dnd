@@ -3,6 +3,8 @@
 Food
 
 Banan bread - 20 SP
+meat - 30 SP
+
 Beverage
 
 Beer - 2 SP

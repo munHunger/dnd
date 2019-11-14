@@ -13,7 +13,7 @@ Back at the boat an @t[ambush] is waiting. The upper deck is completely empty an
 
 Haywood is aware of what the group want and suggests a fair trade. They @t[steal] back the loot and gets to keep **50%** of it. If they return it to Haywood, they get to keep the _boat and Peitur_ as a slave. If on the other hand they don't return it within **2 days** the boat will be sent to another crew under Haywood and Peitur will be killed as he is of no use.
 
-The loot is currently in storage near the **entrance to the underworld**.
+The loot is currently in storage near the **entrance to the underdark**.
 When **night falls** a spider carrige will be brought up and it is scheduled to bring down the loot.
 
 The storage is located next to the entrance and the main storage area is guarded and maintaned by the brute _Rahjin_ under the control of _Szorafein Hun'ervs_. The loot area is sectioned of and Haywood has purchased a section of it marked with his name on a post next to it.
