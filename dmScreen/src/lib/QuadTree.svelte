@@ -6,6 +6,9 @@
 	export let debug = false;
 	let canvas;
 	let canvasOverlay;
+	/**
+	 * @type {import { RoughCanvas } from 'roughjs/bin/canvas'}
+	 */
 	let rc;
 	let ctx;
 	let zoom = 50;
@@ -57,34 +60,7 @@
 			ctx.strokeStyle = '#8FBCBB';
 		}
 		tree.elements.forEach((elem) => {
-			if (elem.obj.type === 'house')
-				rc.rectangle(
-					elem.bounds.x * options.zoom,
-					elem.bounds.y * options.zoom,
-					elem.bounds.width * options.zoom,
-					elem.bounds.height * options.zoom,
-					{
-						fill: '#81A1C1',
-						fillStyle: 'zigzag',
-						//fillStyle: 'solid',
-						fillWeight: 8,
-						hachureGap: 10,
-						roughness: 1
-					}
-				);
-
-			if (elem.obj.type === 'tree')
-				rc.ellipse(
-					elem.bounds.x * options.zoom,
-					elem.bounds.y * options.zoom,
-					elem.bounds.width * options.zoom,
-					elem.bounds.height * options.zoom,
-					{
-						fill: '#88C0D0',
-						fillStyle: 'solid',
-						roughness: 6
-					}
-				);
+			drawElement(elem, rc, options)
 		});
 
 		if (tree.tl) drawTree(tree.tl, ctx, options);
@@ -93,54 +69,98 @@
 		if (tree.br) drawTree(tree.br, ctx, options);
 	}
 
-	function toMapSpace(x, y) {
-		return [(x / 1000) * tree.bounds.width, (y / 1000) * tree.bounds.height];
-	}
-
-	let clickState = 0;
-	let start;
-
-	function onClick(e) {
-		clickState = (clickState + 1) % 2;
-		let bounds = quadTree.rect(
-			...[
-				...toMapSpace(start[0], start[1]),
-				...toMapSpace(e.offsetX - start[0], e.offsetY - start[1])
-			]
-		);
-		console.log(bounds);
-		let old = JSON.stringify(tree);
-		if (clickState === 0) {
-			tree = quadTree.addRect(tree, {
-				bounds,
-				obj: { type: 'house' }
-			});
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			drawTree(tree, ctx, { zoom });
-			console.log(tree);
-			console.log(JSON.stringify(tree) === old);
-			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-		} else {
-			start = [e.offsetX, e.offsetY];
-		}
-	}
-
-	function onMouseMove(e) {
-		console.log(e);
-		if (clickState === 1) {
-			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-			rough
-				.canvas(canvasOverlay)
-				.rectangle(start[0], start[1], e.offsetX - start[0], e.offsetY - start[1], {
+	function drawElement(elem, rc, options) {
+		let rotation = elem.obj.rotation || 0;
+		console.log("rendering with rotation " + rotation);
+		let x = elem.bounds.x * options.zoom;
+		let y = elem.bounds.y * options.zoom;
+		let width = elem.bounds.width * options.zoom;
+		let height = elem.bounds.height * options.zoom;
+		let x2 = x + width;
+		let y2 = y + height;
+		let origin = {x,y}
+		if (elem.obj.type === 'house') {
+			let points = [origin, {x:x2, y}, {x:x2,y:y2}, {x, y:y2}]
+				.map(p => rotatePoint(origin, p, rotation))
+				.map(p => `${p.x} ${p.y}`)
+				.join(" ");
+			console.log(origin)
+			console.log(points)
+			rc.path(`M${x} ${y} L ${points} Z`,
+				{
 					fill: '#81A1C1',
 					fillStyle: 'zigzag',
 					//fillStyle: 'solid',
 					fillWeight: 8,
 					hachureGap: 10,
 					roughness: 1
-				});
+				}
+			);
+		}
+		if (elem.obj.type === 'tree')
+			rc.ellipse(
+				elem.bounds.x * options.zoom,
+				elem.bounds.y * options.zoom,
+				elem.bounds.width * options.zoom,
+				elem.bounds.height * options.zoom,
+				{
+					fill: '#88C0D0',
+					fillStyle: 'solid',
+					roughness: 6
+				}
+			);
+	}
+
+	function rotatePoint(origin, point, angle){
+		return {x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
+				y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y};
+	}
+
+	function toMapSpace(x, y) {
+		return [(x / 1000) * tree.bounds.width, (y / 1000) * tree.bounds.height];
+	}
+
+	/**
+	 * @type {import('$lib/quadTree').Element}
+	 */
+	let elem;
+	let clickState = 0;
+
+	function onClick(e) {
+		clickState = (clickState + 1) % 3;
+		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
+		if(clickState === 1)
+			elem = {obj: {type: 'house'}, bounds: {x: mapPoint[0], y: mapPoint[1], width: 10, height: 10}}
+
+		let old = JSON.stringify(tree);
+		if (clickState === 0) {
+			tree = quadTree.addRect(tree, elem);
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			drawTree(tree, ctx, { zoom });
+			console.log(tree);
+			console.log(JSON.stringify(tree) === old);
+			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 		}
 	}
+
+	function onMouseMove(e) {
+		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
+		if(elem) {
+			if (clickState === 1) {
+				elem.bounds.width = mapPoint[0] - elem.bounds.x;
+				elem.bounds.height = mapPoint[1] - elem.bounds.y;
+			}
+			if(clickState === 2){
+				elem.obj.rotation = elem.bounds.x - mapPoint[0];
+				console.log("set rotation to " + elem.obj.rotation)
+			}
+			if(clickState !== 0) {
+				canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+				drawElement(elem, rough.canvas(canvasOverlay), {zoom})
+			}
+		}
+	}
+
 </script>
 
 {tree}
