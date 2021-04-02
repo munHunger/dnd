@@ -3,7 +3,7 @@
 	import QuadTree from '$lib/QuadTree.svelte';
 
 	let tree = quadTree.tree(0, 0, 10, 10);
-	for (let i = 0; i < 10; i++) {
+	for (let i = 0; i < 0; i++) {
 		let x = Math.random() * 10;
 		let y = Math.random() * 10;
 		let width = Math.random() * (10 - x);

@@ -1,11 +1,17 @@
 <script>
+	import Toolbar from '$lib/Toolbar.svelte';
 	import quadTree from '$lib/quadTree';
 	import { onMount } from 'svelte';
 	import rough from 'roughjs';
+	import colors from "$lib/colors"
+	import {drawElement, types} from "$lib/mapRender";
 	export let tree;
 	export let debug = false;
 	let canvas;
 	let canvasOverlay;
+
+	let tool = types[0]
+
 	/**
 	 * @type {import { RoughCanvas } from 'roughjs/bin/canvas'}
 	 */
@@ -69,48 +75,6 @@
 		if (tree.br) drawTree(tree.br, ctx, options);
 	}
 
-	function drawElement(elem, rc, options) {
-		let rotation = elem.obj.rotation || 0;
-		console.log("rendering with rotation " + rotation);
-		let x = elem.bounds.x * options.zoom;
-		let y = elem.bounds.y * options.zoom;
-		let width = elem.bounds.width * options.zoom;
-		let height = elem.bounds.height * options.zoom;
-		let x2 = x + width;
-		let y2 = y + height;
-		let origin = {x,y}
-		if (elem.obj.type === 'house') {
-			let points = [origin, {x:x2, y}, {x:x2,y:y2}, {x, y:y2}]
-				.map(p => rotatePoint(origin, p, rotation))
-				.map(p => `${p.x} ${p.y}`)
-				.join(" ");
-			console.log(origin)
-			console.log(points)
-			rc.path(`M${x} ${y} L ${points} Z`,
-				{
-					fill: '#81A1C1',
-					fillStyle: 'zigzag',
-					//fillStyle: 'solid',
-					fillWeight: 8,
-					hachureGap: 10,
-					roughness: 1
-				}
-			);
-		}
-		if (elem.obj.type === 'tree')
-			rc.ellipse(
-				elem.bounds.x * options.zoom,
-				elem.bounds.y * options.zoom,
-				elem.bounds.width * options.zoom,
-				elem.bounds.height * options.zoom,
-				{
-					fill: '#88C0D0',
-					fillStyle: 'solid',
-					roughness: 6
-				}
-			);
-	}
-
 	function rotatePoint(origin, point, angle){
 		return {x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
 				y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y};
@@ -118,6 +82,12 @@
 
 	function toMapSpace(x, y) {
 		return [(x / 1000) * tree.bounds.width, (y / 1000) * tree.bounds.height];
+	}
+
+	function getRotation(a, b) {
+		let dX = a.x - b.x
+		let dY = a.y - b.y
+		return Math.atan2(dY, dX)
 	}
 
 	/**
@@ -130,7 +100,7 @@
 		clickState = (clickState + 1) % 3;
 		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
 		if(clickState === 1)
-			elem = {obj: {type: 'house'}, bounds: {x: mapPoint[0], y: mapPoint[1], width: 10, height: 10}}
+			elem = {obj: {type: tool}, bounds: {x: mapPoint[0], y: mapPoint[1], width: 10, height: 10}}
 
 		let old = JSON.stringify(tree);
 		if (clickState === 0) {
@@ -151,7 +121,22 @@
 				elem.bounds.height = mapPoint[1] - elem.bounds.y;
 			}
 			if(clickState === 2){
-				elem.obj.rotation = elem.bounds.x - mapPoint[0];
+				let internalRot = getRotation({
+					x: 0,
+					y: 0
+				}, {
+					x: elem.bounds.width,
+					y: elem.bounds.height
+				});
+				let mouseRot = getRotation(
+					{
+						x: elem.bounds.x,
+						y: elem.bounds.y
+					},
+					{x: mapPoint[0],
+					y:mapPoint[1]}
+				)
+				elem.obj.rotation = mouseRot - internalRot
 				console.log("set rotation to " + elem.obj.rotation)
 			}
 			if(clickState !== 0) {
@@ -166,7 +151,7 @@
 {tree}
 quadTree
 
-<canvas bind:this={canvas} width="1000" height="1000" style="background-color: #f0f9ff;" />
+<canvas bind:this={canvas} width="1000" height="1000" style="background-color: {colors.bg};" />
 
 <canvas
 	bind:this={canvasOverlay}
@@ -175,8 +160,15 @@ quadTree
 	on:click={onClick}
 	on:mousemove={onMouseMove}
 />
-
+<div class="toolbar">
+	<Toolbar onSelect={s => tool = s}/>
+</div>
 <style>
+	.toolbar {
+		position: absolute;
+		top: 1rem;
+		left: 1rem;
+	}
 	canvas {
 		position: absolute;
 		top: 0px;
