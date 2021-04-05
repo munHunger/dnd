@@ -30,8 +30,8 @@
  */
 function intersectHalfPoints(a, b) {
 	return (
-		(b.x <= a.x + a.width / 2 && b.x + b.width > a.x + a.width / 2) ||
-		(b.y <= a.y + a.height / 2 && b.y + b.height > a.y + a.height / 2)
+		(b.x <= a.x + a.width / 2 && b.x + b.width >= a.x + a.width / 2) ||
+		(b.y <= a.y + a.height / 2 && b.y + b.height >= a.y + a.height / 2)
 	);
 }
 
@@ -48,36 +48,32 @@ function contains(a, b) {
 }
 
 /**
+ * @param {Rect} rect
+ * @param {Object} point
+ * @param {number} point.x
+ * @param {number} point.y
+ * @returns {boolean}
+ */
+function containsPoint(rect, point) {
+	return (
+		point.x >= rect.x &&
+		point.x <= rect.x + rect.width &&
+		point.y >= rect.y &&
+		point.y <= rect.y + rect.height
+	);
+}
+
+/**
  * checks if a intersects b
  * @param {Rect} a
  * @param {Rect} b
  * @returns {boolean}
  */
 function intersects(a, b) {
-	let l1 = { x: a.x, y: a.y };
 	let l2 = { x: b.x, y: b.y };
-	let r1 = { x: a.x + a.width, y: a.y + a.height };
 	let r2 = { x: b.x + b.width, y: b.y + b.height };
 
-	// To check if either rectangle is actually a line
-	// For example :  l1 ={-1,0}  r1={1,1}  l2={0,-1}  r2={0,1}
-
-	if (l1.x == r1.x || l1.y == r2.y || l2.x == r2.x || l2.y == r2.y) {
-		// the line cannot have positive overlap
-		return false;
-	}
-
-	// If one rectangle is on left side of other
-	if (l1.x >= r2.x || l2.x >= r1.x) {
-		return false;
-	}
-
-	// If one rectangle is above other
-	if (l1.y <= r2.y || l2.y <= r1.y) {
-		return false;
-	}
-
-	return true;
+	return containsPoint(a, l2) || containsPoint(a, r2);
 }
 
 /**
@@ -93,25 +89,75 @@ function unwrap(rect) {
  * @param {Element} element
  */
 export function addRect(t, element) {
-	if (intersectHalfPoints(t.bounds, element.bounds)) t.elements.push(element);
-	else {
+	console.log('addRect');
+	if (!contains(t.bounds, element.bounds)) {
+		console.log('need new parent');
+		let newParent;
+		//need to create new parent
+		if (t.bounds.x + t.bounds.width < element.bounds.x + element.bounds.width) {
+			if (t.bounds.y + t.bounds.height < element.bounds.y + element.bounds.height) {
+				newParent = tree(t.bounds.x, t.bounds.y, t.bounds.width * 2, t.bounds.height * 2);
+				newParent.tl = t;
+			} else {
+				newParent = tree(
+					t.bounds.x,
+					t.bounds.y - t.bounds.height,
+					t.bounds.width * 2,
+					t.bounds.height * 2
+				);
+				newParent.bl = t;
+			}
+		} else {
+			if (t.bounds.y + t.bounds.height < element.bounds.y + element.bounds.height) {
+				newParent = tree(
+					t.bounds.x - t.bounds.width,
+					t.bounds.y,
+					t.bounds.width * 2,
+					t.bounds.height * 2
+				);
+				newParent.tr = t;
+			} else {
+				newParent = tree(
+					t.bounds.x - t.bounds.width,
+					t.bounds.y - t.bounds.height,
+					t.bounds.width * 2,
+					t.bounds.height * 2
+				);
+				newParent.br = t;
+			}
+		}
+		console.log('new parent created, inserting element to new root');
+		return addRect(newParent, element);
+	}
+	if (intersectHalfPoints(t.bounds, element.bounds)) {
+		console.log('pushing element to current');
+		t.elements.push(element);
+	} else {
+		console.log('could not insert to current, searching for suitable child');
 		let width = t.bounds.width / 2;
 		let height = t.bounds.height / 2;
 		let tlBounds = rect(t.bounds.x, t.bounds.y, width, height);
 		let trBounds = rect(t.bounds.x + width, t.bounds.y, width, height);
 		let blBounds = rect(t.bounds.x, t.bounds.y + height, width, height);
 		let brBounds = rect(t.bounds.x + width, t.bounds.y + height, width, height);
+		console.log(element.bounds);
+		console.log(t.bounds);
+		console.log([tlBounds, trBounds, blBounds, brBounds]);
 		if (contains(tlBounds, element.bounds)) {
+			console.log('inserting to tl');
 			t.tl = addRect(t.tl || tree(...unwrap(tlBounds)), element);
 		} else if (contains(trBounds, element.bounds)) {
+			console.log('inserting to tr');
 			t.tr = addRect(t.tr || tree(...unwrap(trBounds)), element);
 		} else if (contains(blBounds, element.bounds)) {
+			console.log('inserting to bl');
 			t.bl = addRect(t.bl || tree(...unwrap(blBounds)), element);
 		} else if (contains(brBounds, element.bounds)) {
+			console.log('inserting to br');
 			t.br = addRect(t.br || tree(...unwrap(brBounds)), element);
 		}
 	}
-	console.log(t);
+	console.log('returning');
 	return t;
 }
 
@@ -148,16 +194,16 @@ export function search(tree, bounds, depth = -1) {
 	let trBounds = rect(tree.bounds.x + width, tree.bounds.y, width, height);
 	let blBounds = rect(tree.bounds.x, tree.bounds.y + height, width, height);
 	let brBounds = rect(tree.bounds.x + width, tree.bounds.y + height, width, height);
-	if (contains(bounds, tlBounds)) {
+	if (intersects(bounds, tlBounds)) {
 		list = list.concat(search(tree.tl, bounds, depth - 1));
 	}
-	if (contains(bounds, trBounds)) {
+	if (intersects(bounds, trBounds)) {
 		list = list.concat(search(tree.tr, bounds, depth - 1));
 	}
-	if (contains(bounds, blBounds)) {
+	if (intersects(bounds, blBounds)) {
 		list = list.concat(search(tree.bl, bounds, depth - 1));
 	}
-	if (contains(bounds, brBounds)) {
+	if (intersects(bounds, brBounds)) {
 		list = list.concat(search(tree.br, bounds, depth - 1));
 	}
 	return list;

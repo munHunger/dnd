@@ -3,6 +3,12 @@
 	import QuadTree from '$lib/QuadTree.svelte';
 
 	let tree = quadTree.tree(0, 0, 10, 10);
+	tree = quadTree.addRect(tree, {
+		bounds: quadTree.rect(11, 11, 2, 4),
+		obj: {
+			type: 'house'
+		}
+	});
 	for (let i = 0; i < 0; i++) {
 		let x = Math.random() * 10;
 		let y = Math.random() * 10;

@@ -17,8 +17,8 @@
 	 */
 	let rc;
 	let ctx;
-	let zoom = 50;
-	let camera = { x: 5, y: 0, width: 11, height: 11 };
+	let zoom = 25;
+	let camera = { x: 8, y: 8, width: 11, height: 11 };
 	onMount(() => {
 		ctx = canvas.getContext('2d');
 		rc = rough.canvas(canvas);
@@ -137,8 +137,10 @@
 	function onMouseMove(e) {
 		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
 		if (isSpacePressed) {
-			camera.x -= e.movementX * 0.01;
-			camera.y -= e.movementY * 0.01;
+			let delta = 1 * (1 / zoom);
+			camera.x -= e.movementX * delta;
+			camera.y -= e.movementY * delta;
+			console.log(delta);
 			redraw();
 		}
 		if (elem) {
@@ -184,19 +186,36 @@
 
 	let isSpacePressed = false;
 	function keyDown(key) {
-		if (key.key === ' ') isSpacePressed = true;
+		if (key.key === ' ') {
+			isSpacePressed = true;
+			key.preventDefault();
+		}
 	}
 
 	function keyUp(key) {
 		if (key.key === ' ') isSpacePressed = false;
 	}
+
+	function scroll(event) {
+		let delta = event.deltaY * 0.1;
+		camera.x -= delta;
+		camera.y -= delta;
+		camera.width += delta * 2;
+		camera.height += delta * 2;
+		zoom = canvas.width / camera.width;
+		redraw();
+		console.log(zoom);
+	}
 </script>
 
-<svelte:window on:keydown={keyDown} on:keyup={keyUp} />
+<svelte:window on:keydown={keyDown} on:keyup={keyUp} on:wheel={scroll} />
 
-<!-- <pre style="position: absolute; right: 1rem; text-align: left">
-	{JSON.stringify(tree, null, 2)}
-</pre> -->
+<pre
+	style="position: absolute; right: 1rem; text-align: left">
+<!-- {JSON.stringify(tree, null, 2)} -->
+{JSON.stringify(camera, null, 2)}
+<!-- {JSON.stringify(quadTree.search(tree, camera), null, 2)} -->
+</pre>
 quadTree
 
 <canvas bind:this={canvas} width="1000" height="1000" style="background-color: {colors.bg};" />
