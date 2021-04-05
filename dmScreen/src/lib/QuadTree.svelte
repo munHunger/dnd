@@ -3,14 +3,14 @@
 	import quadTree from '$lib/quadTree';
 	import { onMount } from 'svelte';
 	import rough from 'roughjs';
-	import colors from "$lib/colors"
-	import {drawElement, types} from "$lib/mapRender";
+	import colors from '$lib/colors';
+	import { drawElement, types } from '$lib/mapRender';
 	export let tree;
 	export let debug = false;
 	let canvas;
 	let canvasOverlay;
 
-	let tool = types[0]
+	let tool = types[0];
 
 	/**
 	 * @type {import { RoughCanvas } from 'roughjs/bin/canvas'}
@@ -18,13 +18,53 @@
 	let rc;
 	let ctx;
 	let zoom = 50;
+	let camera = { x: 5, y: 0, width: 11, height: 11 };
 	onMount(() => {
 		ctx = canvas.getContext('2d');
 		rc = rough.canvas(canvas);
-		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		zoom = canvas.width / tree.bounds.width;
-		drawTree(tree, ctx, { zoom });
+		zoom = canvas.width / camera.width;
+		redraw();
 	});
+
+	function drawDebugLines(tree, ctx, options = { zoom: 1 }) {
+		ctx.strokeStyle = '#4C566A';
+		ctx.strokeRect(
+			(tree.bounds.x - camera.x) * options.zoom,
+			(tree.bounds.y - camera.y) * options.zoom,
+			tree.bounds.width * options.zoom,
+			tree.bounds.height * options.zoom
+		);
+
+		ctx.strokeStyle = '#E5E9F0';
+		ctx.setLineDash([5, 3]); /*dashes are 5px and spaces are 3px*/
+		ctx.beginPath();
+		ctx.moveTo(
+			(tree.bounds.x - camera.x + tree.bounds.width / 2) * options.zoom,
+			(tree.bounds.y - camera.y) * options.zoom
+		);
+		ctx.lineTo(
+			(tree.bounds.x - camera.x + tree.bounds.width / 2) * options.zoom,
+			(tree.bounds.y - camera.y + tree.bounds.height) * options.zoom
+		);
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.moveTo(
+			(tree.bounds.x - camera.x) * options.zoom,
+			(tree.bounds.y - camera.y + tree.bounds.height / 2) * options.zoom
+		);
+		ctx.lineTo(
+			(tree.bounds.x - camera.x + tree.bounds.width) * options.zoom,
+			(tree.bounds.y - camera.y + tree.bounds.height / 2) * options.zoom
+		);
+		ctx.stroke();
+		ctx.setLineDash([]);
+		ctx.strokeStyle = '#8FBCBB';
+		if (tree.tl) drawDebugLines(tree.tl, ctx, options);
+		if (tree.tr) drawDebugLines(tree.tr, ctx, options);
+		if (tree.bl) drawDebugLines(tree.bl, ctx, options);
+		if (tree.br) drawDebugLines(tree.br, ctx, options);
+	}
+
 	/**
 	 * @param {import('./quadTree').Tree} tree
 	 * @param {CanvasRenderingContext2D} ctx
@@ -32,62 +72,41 @@
 	 */
 	function drawTree(tree, ctx, options = { zoom: 1 }) {
 		if (debug) {
-			ctx.strokeStyle = '#4C566A';
-			ctx.strokeRect(
-				tree.bounds.x * options.zoom,
-				tree.bounds.y * options.zoom,
-				tree.bounds.width * options.zoom,
-				tree.bounds.height * options.zoom
-			);
-
-			ctx.strokeStyle = '#E5E9F0';
-			ctx.setLineDash([5, 3]); /*dashes are 5px and spaces are 3px*/
-			ctx.beginPath();
-			ctx.moveTo(
-				(tree.bounds.x + tree.bounds.width / 2) * options.zoom,
-				tree.bounds.y * options.zoom
-			);
-			ctx.lineTo(
-				(tree.bounds.x + tree.bounds.width / 2) * options.zoom,
-				(tree.bounds.y + tree.bounds.height) * options.zoom
-			);
-			ctx.stroke();
-			ctx.beginPath();
-			ctx.moveTo(
-				tree.bounds.x * options.zoom,
-				(tree.bounds.y + tree.bounds.height / 2) * options.zoom
-			);
-			ctx.lineTo(
-				(tree.bounds.x + tree.bounds.width) * options.zoom,
-				(tree.bounds.y + tree.bounds.height / 2) * options.zoom
-			);
-			ctx.stroke();
-			ctx.setLineDash([]);
-			ctx.strokeStyle = '#8FBCBB';
+			drawDebugLines(tree, ctx, options);
 		}
-		tree.elements.forEach((elem) => {
-			drawElement(elem, rc, options)
+		quadTree.search(tree, camera).forEach((elem) => {
+			let b = elem.bounds;
+			drawElement(
+				{
+					obj: elem.obj,
+					bounds: { ...b, x: b.x - camera.x, y: b.y - camera.y }
+				},
+				rc,
+				options
+			);
 		});
-
-		if (tree.tl) drawTree(tree.tl, ctx, options);
-		if (tree.tr) drawTree(tree.tr, ctx, options);
-		if (tree.bl) drawTree(tree.bl, ctx, options);
-		if (tree.br) drawTree(tree.br, ctx, options);
 	}
 
-	function rotatePoint(origin, point, angle){
-		return {x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
-				y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y};
+	function rotatePoint(origin, point, angle) {
+		return {
+			x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
+			y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y
+		};
 	}
 
 	function toMapSpace(x, y) {
-		return [(x / 1000) * tree.bounds.width, (y / 1000) * tree.bounds.height];
+		return [(x / 1000) * camera.width + camera.x + 0, (y / 1000) * camera.height + camera.y];
 	}
 
 	function getRotation(a, b) {
-		let dX = a.x - b.x
-		let dY = a.y - b.y
-		return Math.atan2(dY, dX)
+		let dX = a.x - b.x;
+		let dY = a.y - b.y;
+		return Math.atan2(dY, dX);
+	}
+
+	function redraw() {
+		ctx.clearRect(0, 0, canvas.width, canvas.height);
+		drawTree(tree, ctx, { zoom });
 	}
 
 	/**
@@ -99,14 +118,16 @@
 	function onClick(e) {
 		clickState = (clickState + 1) % 3;
 		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
-		if(clickState === 1)
-			elem = {obj: {type: tool}, bounds: {x: mapPoint[0], y: mapPoint[1], width: 10, height: 10}}
+		if (clickState === 1)
+			elem = {
+				obj: { type: tool },
+				bounds: { x: mapPoint[0], y: mapPoint[1], width: 10, height: 10 }
+			};
 
 		let old = JSON.stringify(tree);
 		if (clickState === 0) {
 			tree = quadTree.addRect(tree, elem);
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-			drawTree(tree, ctx, { zoom });
+			redraw();
 			console.log(tree);
 			console.log(JSON.stringify(tree) === old);
 			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
@@ -115,40 +136,67 @@
 
 	function onMouseMove(e) {
 		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
-		if(elem) {
+		if (isSpacePressed) {
+			camera.x -= e.movementX * 0.01;
+			camera.y -= e.movementY * 0.01;
+			redraw();
+		}
+		if (elem) {
 			if (clickState === 1) {
 				elem.bounds.width = mapPoint[0] - elem.bounds.x;
 				elem.bounds.height = mapPoint[1] - elem.bounds.y;
 			}
-			if(clickState === 2){
-				let internalRot = getRotation({
-					x: 0,
-					y: 0
-				}, {
-					x: elem.bounds.width,
-					y: elem.bounds.height
-				});
+			if (clickState === 2) {
+				let internalRot = getRotation(
+					{
+						x: 0,
+						y: 0
+					},
+					{
+						x: elem.bounds.width,
+						y: elem.bounds.height
+					}
+				);
 				let mouseRot = getRotation(
 					{
 						x: elem.bounds.x,
 						y: elem.bounds.y
 					},
-					{x: mapPoint[0],
-					y:mapPoint[1]}
-				)
-				elem.obj.rotation = mouseRot - internalRot
-				console.log("set rotation to " + elem.obj.rotation)
+					{ x: mapPoint[0], y: mapPoint[1] }
+				);
+				elem.obj.rotation = mouseRot - internalRot;
+				console.log('set rotation to ' + elem.obj.rotation);
 			}
-			if(clickState !== 0) {
+			if (clickState !== 0) {
 				canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-				drawElement(elem, rough.canvas(canvasOverlay), {zoom})
+				let b = elem.bounds;
+				drawElement(
+					{
+						obj: elem.obj,
+						bounds: { ...b, x: b.x - camera.x, y: b.y - camera.y }
+					},
+					rough.canvas(canvasOverlay),
+					{ zoom }
+				);
 			}
 		}
 	}
 
+	let isSpacePressed = false;
+	function keyDown(key) {
+		if (key.key === ' ') isSpacePressed = true;
+	}
+
+	function keyUp(key) {
+		if (key.key === ' ') isSpacePressed = false;
+	}
 </script>
 
-{tree}
+<svelte:window on:keydown={keyDown} on:keyup={keyUp} />
+
+<!-- <pre style="position: absolute; right: 1rem; text-align: left">
+	{JSON.stringify(tree, null, 2)}
+</pre> -->
 quadTree
 
 <canvas bind:this={canvas} width="1000" height="1000" style="background-color: {colors.bg};" />
@@ -161,8 +209,9 @@ quadTree
 	on:mousemove={onMouseMove}
 />
 <div class="toolbar">
-	<Toolbar onSelect={s => tool = s}/>
+	<Toolbar onSelect={(s) => (tool = s)} />
 </div>
+
 <style>
 	.toolbar {
 		position: absolute;

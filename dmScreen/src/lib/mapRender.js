@@ -21,8 +21,7 @@ export function drawElement(elem, rc, options) {
 			.map((p) => rotatePoint(origin, p, rotation))
 			.map((p) => `${p.x} ${p.y}`)
 			.join(' ');
-		console.log(origin);
-		console.log(points);
+		console.log((rotation / (2 * Math.PI)) * 360 + (Math.random() > 0.5 ? 0 : 90));
 		rc.path(`M${x} ${y} L ${points} Z`, {
 			fill: colors.light,
 			stroke: colors.light,
@@ -30,7 +29,7 @@ export function drawElement(elem, rc, options) {
 			//fillStyle: 'solid',
 			fillWeight: 3,
 			hachureGap: 10,
-			hachureAngle: Math.random() > 0.5 ? 0 : 90,
+			hachureAngle: -(rotation / (2 * Math.PI)) * 360 + (Math.random() > 0.5 ? 0 : 90),
 			roughness: 1
 		});
 	}
@@ -39,8 +38,6 @@ export function drawElement(elem, rc, options) {
 			.map((p) => rotatePoint(origin, p, rotation))
 			.map((p) => `${p.x} ${p.y}`)
 			.join(' ');
-		console.log(origin);
-		console.log(points);
 		rc.path(`M${x} ${y} L ${points} Z`, {
 			fill: colors.shaded,
 			stroke: colors.line,
