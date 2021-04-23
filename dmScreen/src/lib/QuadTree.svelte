@@ -17,17 +17,58 @@
 	 */
 	let rc;
 	let ctx;
-	let zoom = 25;
+	let zoom = 100;
+	let aspect;
 	let camera = { x: 8, y: 8, width: 11, height: 11 };
 	onMount(() => {
 		ctx = canvas.getContext('2d');
 		rc = rough.canvas(canvas);
-		zoom = canvas.width / camera.width;
+		resizeCanvas(canvas);
+		resizeCanvas(canvasOverlay);
+
+		aspect = canvas.width / canvas.height;
+		camera.height = camera.height / aspect;
+		window.onresize = () => {
+			resizeCanvas(canvas);
+			resizeCanvas(canvasOverlay);
+		};
 		redraw();
 	});
 
+	function resizeCanvas(canvas) {
+		canvas.height = window.innerHeight;
+		canvas.width = window.innerWidth;
+		aspect = canvas.width / canvas.height;
+		zoom = canvas.width / camera.width;
+		redraw();
+	}
+
+	/**
+	 * @param {Number} num
+	 * @returns {Number}
+	 */
+	function toSingleDecimal(num) {
+		return Math.floor(num * 10) / 10;
+	}
+
+	/**
+	 * @param {import('./quadTree').Tree} tree
+	 * @param {CanvasRenderingContext2D} ctx
+	 * @param options
+	 */
 	function drawDebugLines(tree, ctx, options = { zoom: 1 }) {
 		ctx.strokeStyle = '#4C566A';
+
+		ctx.font = '25px serif';
+		ctx.fillText(
+			`(${toSingleDecimal(camera.x)},${toSingleDecimal(camera.y)}), (${toSingleDecimal(
+				camera.width
+			)},${toSingleDecimal(camera.height)}), (${toSingleDecimal(
+				camera.x + camera.width
+			)},${toSingleDecimal(camera.y + camera.height)}) ${JSON.stringify({ zoom, aspect })}`,
+			25,
+			canvas.height - 25
+		);
 		ctx.strokeRect(
 			(tree.bounds.x - camera.x) * options.zoom,
 			(tree.bounds.y - camera.y) * options.zoom,
@@ -95,7 +136,10 @@
 	}
 
 	function toMapSpace(x, y) {
-		return [(x / 1000) * camera.width + camera.x + 0, (y / 1000) * camera.height + camera.y];
+		return [
+			(x / canvas.width) * camera.width + camera.x,
+			(y / canvas.height) * camera.height + camera.y
+		];
 	}
 
 	function getRotation(a, b) {
