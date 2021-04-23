@@ -136,10 +136,7 @@
 	}
 
 	function toMapSpace(x, y) {
-		return [
-			(x / canvas.width) * camera.width + camera.x,
-			(y / canvas.height) * camera.height + camera.y
-		];
+		return [(x - camera.x * -zoom) / zoom, (y - camera.y * -zoom) / zoom];
 	}
 
 	function getRotation(a, b) {
@@ -160,6 +157,16 @@
 	let clickState = 0;
 
 	function onClick(e) {
+		let debug = {
+			mouse: [e.offsetX, e.offsetY],
+			zoom,
+			cameraPos: [camera.x, camera.y],
+			cameraSize: [camera.width, camera.height],
+			canvas: [canvas.width, canvas.height],
+			calc: toMapSpace(e.offsetX, e.offsetY)
+		};
+		console.log(debug);
+		window.debug = debug;
 		clickState = (clickState + 1) % 3;
 		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
 		if (clickState === 1)
@@ -211,7 +218,6 @@
 					{ x: mapPoint[0], y: mapPoint[1] }
 				);
 				elem.obj.rotation = mouseRot - internalRot;
-				console.log('set rotation to ' + elem.obj.rotation);
 			}
 			if (clickState !== 0) {
 				canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
