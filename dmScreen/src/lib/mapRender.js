@@ -1,6 +1,6 @@
 import colors from '$lib/colors';
 import { Entity } from './entity';
-export let types = ['house', 'tree', 'farm', 'greble'];
+export let types = Entity.allTypes();
 
 /**
  *
@@ -9,19 +9,15 @@ export let types = ['house', 'tree', 'farm', 'greble'];
  * @param {*} options
  */
 export function drawElement(elem, rc, options) {
-	let rotation = elem.obj.rotation || 0;
 	let x = elem.bounds.x * options.zoom;
 	let y = elem.bounds.y * options.zoom;
 	let width = elem.bounds.width * options.zoom;
 	let height = elem.bounds.height * options.zoom;
-	let x2 = x + width;
-	let y2 = y + height;
-	let origin = { x, y };
 	let element = Entity.toEntity(elem);
 	if (element) {
-		console.log('can render from element?');
 		element.render(rc, options);
 	} else {
+		//TODO: remove and create entity
 		if (elem.obj.type === 'greble')
 			rc.line(x, y, x + width, y + height, {
 				stroke: colors.soft,

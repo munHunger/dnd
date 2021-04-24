@@ -5,7 +5,7 @@
 	import rough from 'roughjs';
 	import colors from '$lib/colors';
 	import { drawElement, types } from '$lib/mapRender';
-	import { Farm, House, Tree } from './entity';
+	import { Entity, Farm, House, Tree } from './entity';
 	export let tree;
 	export let debug = false;
 	let canvas;
@@ -129,21 +129,8 @@
 		});
 	}
 
-	function rotatePoint(origin, point, angle) {
-		return {
-			x: Math.cos(angle) * (point.x - origin.x) - Math.sin(angle) * (point.y - origin.y) + origin.x,
-			y: Math.sin(angle) * (point.x - origin.x) + Math.cos(angle) * (point.y - origin.y) + origin.y
-		};
-	}
-
 	function toMapSpace(x, y) {
 		return [(x - camera.x * -zoom) / zoom, (y - camera.y * -zoom) / zoom];
-	}
-
-	function getRotation(a, b) {
-		let dX = a.x - b.x;
-		let dY = a.y - b.y;
-		return Math.atan2(dY, dX);
 	}
 
 	function redraw() {
@@ -152,32 +139,19 @@
 	}
 
 	/**
-	 * @type {import('$lib/quadTree').Element}
+	 * @type {Entity}
 	 */
-	let elem;
-	let clickState = 0;
-
-	let house = new House();
+	let current;
 	function onClick(e) {
-		window.debug = debug;
-		clickState = (clickState + 1) % 3;
 		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
-		let n = house.click(mapPoint[0], mapPoint[1]);
-		if (n) {
-			console.log('adding ' + JSON.stringify(n));
-			house = new Tree();
-			tree = quadTree.addRect(tree, n);
+		if (!current) {
+			current = new tool();
 		}
-
-		if (clickState === 1)
-			elem = {
-				obj: { type: tool },
-				bounds: { x: mapPoint[0], y: mapPoint[1], width: 10, height: 10 }
-			};
-
-		let old = JSON.stringify(tree);
-		if (clickState === 0) {
-			//tree = quadTree.addRect(tree, elem);
+		let completeTool = current.click(mapPoint[0], mapPoint[1]);
+		if (completeTool) {
+			console.log('adding ' + JSON.stringify(completeTool));
+			current = undefined;
+			tree = quadTree.addRect(tree, completeTool);
 			redraw();
 			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 		}
@@ -191,43 +165,11 @@
 			camera.y -= e.movementY * delta;
 			redraw();
 		}
-		if (elem) {
-			if (clickState === 1) {
-				elem.bounds.width = mapPoint[0] - elem.bounds.x;
-				elem.bounds.height = mapPoint[1] - elem.bounds.y;
-			}
-			if (clickState === 2) {
-				let internalRot = getRotation(
-					{
-						x: 0,
-						y: 0
-					},
-					{
-						x: elem.bounds.width,
-						y: elem.bounds.height
-					}
-				);
-				let mouseRot = getRotation(
-					{
-						x: elem.bounds.x,
-						y: elem.bounds.y
-					},
-					{ x: mapPoint[0], y: mapPoint[1] }
-				);
-				elem.obj.rotation = mouseRot - internalRot;
-			}
-			if (clickState !== 0) {
-				canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-				let b = elem.bounds;
-				drawElement(
-					{
-						obj: elem.obj,
-						bounds: { ...b, x: b.x - camera.x, y: b.y - camera.y }
-					},
-					rough.canvas(canvasOverlay),
-					{ zoom }
-				);
-			}
+		if (current) {
+			current.setMouse(mapPoint[0], mapPoint[1]);
+			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+			let rc = rough.canvas(canvasOverlay);
+			current.render(rc, { zoom, camera });
 		}
 	}
 
@@ -258,9 +200,7 @@
 
 <pre
 	style="position: absolute; right: 1rem; text-align: left">
-<!-- {JSON.stringify(tree, null, 2)} -->
 {JSON.stringify(camera, null, 2)}
-<!-- {JSON.stringify(quadTree.search(tree, camera), null, 2)} -->
 </pre>
 quadTree
 

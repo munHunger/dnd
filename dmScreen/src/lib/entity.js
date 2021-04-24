@@ -1,4 +1,5 @@
 import colors from './colors';
+import quadTree from './quadTree';
 
 export class Entity {
 	/**
@@ -6,6 +7,7 @@ export class Entity {
 	 */
 	bounds;
 	inputs = [];
+	mouse;
 
 	/**
 	 * @param {import ('./quadTree').Element} elem
@@ -20,21 +22,27 @@ export class Entity {
 		if (this.isValid()) return this.build();
 	}
 
+	setMouse(x, y) {
+		this.mouse = { x, y };
+	}
+
 	build() {
-		throw 'not implemented';
+		throw 'build not implemented';
 	}
 	isValid() {
-		throw 'not implemented';
+		throw 'isValid not implemented';
 	}
 	getType() {
-		throw 'not implemented';
+		throw 'getType not implemented';
 	}
 
 	/**
 	 * @param {import('roughjs/bin/canvas').RoughCanvas} rc
 	 * @param {*} options
 	 */
-	render(rc, options) {}
+	render(rc, options) {
+		throw 'render not implemented';
+	}
 	getRotation(a, b) {
 		let dX = a.x - b.x;
 		let dY = a.y - b.y;
@@ -54,6 +62,10 @@ export class Entity {
 			case Tree.getType():
 				return new Tree(element);
 		}
+	}
+
+	static allTypes() {
+		return [House, Farm, Tree];
 	}
 
 	static rotatePoint(origin, point, angle) {
@@ -83,10 +95,16 @@ export class Tree extends Entity {
 	 * @param {*} options
 	 */
 	render(rc, options) {
-		let x = this.bounds.x * options.zoom;
-		let y = this.bounds.y * options.zoom;
-		let width = this.bounds.width * options.zoom;
-		let height = this.bounds.height * options.zoom;
+		let bounds = this.bounds || {
+			x: this.inputs[0].x,
+			y: this.inputs[0].y,
+			width: (this.inputs[1] || this.mouse || {}).x - this.inputs[0].x || 1,
+			height: (this.inputs[1] || this.mouse || {}).y - this.inputs[0].y || 1
+		};
+		let x = (bounds.x - (((options || {}).camera || {}).x || 0)) * options.zoom;
+		let y = (bounds.y - (((options || {}).camera || {}).y || 0)) * options.zoom;
+		let width = bounds.width * options.zoom;
+		let height = bounds.height * options.zoom;
 		rc.ellipse(x + width / 2, y + height / 2, width, height, {
 			fill: colors.shaded,
 			stroke: colors.line,
@@ -98,6 +116,9 @@ export class Tree extends Entity {
 		return this.inputs.length === 2;
 	}
 
+	getType() {
+		return Tree.getType();
+	}
 	static getType() {
 		return 'tree';
 	}
@@ -144,15 +165,44 @@ export class Rect extends Entity {
 	 * @param {*} options
 	 */
 	render(rc, options) {
-		let x = this.bounds.x * options.zoom;
-		let y = this.bounds.y * options.zoom;
-		let width = this.bounds.width * options.zoom;
-		let height = this.bounds.height * options.zoom;
+		let bounds = this.bounds || {
+			x: this.inputs[0].x,
+			y: this.inputs[0].y,
+			width: (this.inputs[1] || this.mouse || {}).x - this.inputs[0].x || 1,
+			height: (this.inputs[1] || this.mouse || {}).y - this.inputs[0].y || 1
+		};
+		let x = (bounds.x - (((options || {}).camera || {}).x || 0)) * options.zoom;
+		let y = (bounds.y - (((options || {}).camera || {}).y || 0)) * options.zoom;
+		let width = bounds.width * options.zoom;
+		let height = bounds.height * options.zoom;
 		let x2 = x + width;
 		let y2 = y + height;
 		let origin = { x, y };
+
+		let rotation = this.rotation;
+		if (!rotation && this.inputs.length > 1) {
+			let internalRot = super.getRotation(
+				{
+					x: 0,
+					y: 0
+				},
+				{
+					x: bounds.width,
+					y: bounds.height
+				}
+			);
+			let mouseRot = super.getRotation(
+				{
+					x: bounds.x,
+					y: bounds.y
+				},
+				{ x: this.mouse.x, y: this.mouse.y }
+			);
+			rotation = mouseRot - internalRot;
+		}
+
 		let points = [origin, { x: x2, y }, { x: x2, y: y2 }, { x, y: y2 }]
-			.map((p) => Entity.rotatePoint(origin, p, this.rotation))
+			.map((p) => Entity.rotatePoint(origin, p, rotation || 0))
 			.map((p) => `${p.x} ${p.y}`)
 			.join(' ');
 		this.draw(rc, x, y, points);
@@ -164,7 +214,7 @@ export class Rect extends Entity {
 	 * @param {Array<number>} points list of points relative to origin
 	 */
 	draw(rc, x, y, points) {
-		throw 'not implemented';
+		throw 'draw not implemented';
 	}
 	isValid() {
 		return this.inputs.length === 3;
@@ -190,6 +240,9 @@ export class House extends Rect {
 		});
 	}
 
+	getType() {
+		return House.getType();
+	}
 	static getType() {
 		return 'house';
 	}
@@ -214,6 +267,9 @@ export class Farm extends Rect {
 		});
 	}
 
+	getType() {
+		return Farm.getType();
+	}
 	static getType() {
 		return 'farm';
 	}

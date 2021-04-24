@@ -12,21 +12,16 @@
 
 	onMount(() => {
 		types.forEach((type, i) => {
-			drawElement(
-				{
-					bounds: {
-						x: 0.25,
-						y: 0.25,
-						width: 0.5,
-						height: 0.5
-					},
-					obj: {
-						type
-					}
+			let entity = new type({
+				bounds: {
+					x: 0.25,
+					y: 0.25,
+					width: 0.5,
+					height: 0.5
 				},
-				rough.canvas(canvas[i]),
-				{ zoom: 50 }
-			);
+				obj: {}
+			});
+			entity.render(rough.canvas(canvas[i]), { zoom: 50 });
 		});
 	});
 </script>
