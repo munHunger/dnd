@@ -5,6 +5,7 @@
 	import rough from 'roughjs';
 	import colors from '$lib/colors';
 	import { drawElement, types } from '$lib/mapRender';
+	import { Farm, House, Tree } from './entity';
 	export let tree;
 	export let debug = false;
 	let canvas;
@@ -156,19 +157,18 @@
 	let elem;
 	let clickState = 0;
 
+	let house = new House();
 	function onClick(e) {
-		let debug = {
-			mouse: [e.offsetX, e.offsetY],
-			zoom,
-			cameraPos: [camera.x, camera.y],
-			cameraSize: [camera.width, camera.height],
-			canvas: [canvas.width, canvas.height],
-			calc: toMapSpace(e.offsetX, e.offsetY)
-		};
-		console.log(debug);
 		window.debug = debug;
 		clickState = (clickState + 1) % 3;
 		let mapPoint = toMapSpace(e.offsetX, e.offsetY);
+		let n = house.click(mapPoint[0], mapPoint[1]);
+		if (n) {
+			console.log('adding ' + JSON.stringify(n));
+			house = new Tree();
+			tree = quadTree.addRect(tree, n);
+		}
+
 		if (clickState === 1)
 			elem = {
 				obj: { type: tool },
@@ -177,10 +177,8 @@
 
 		let old = JSON.stringify(tree);
 		if (clickState === 0) {
-			tree = quadTree.addRect(tree, elem);
+			//tree = quadTree.addRect(tree, elem);
 			redraw();
-			console.log(tree);
-			console.log(JSON.stringify(tree) === old);
 			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 		}
 	}
@@ -191,7 +189,6 @@
 			let delta = 1 * (1 / zoom);
 			camera.x -= e.movementX * delta;
 			camera.y -= e.movementY * delta;
-			console.log(delta);
 			redraw();
 		}
 		if (elem) {
@@ -254,7 +251,6 @@
 		camera.height += delta * 2;
 		zoom = canvas.width / camera.width;
 		redraw();
-		console.log(zoom);
 	}
 </script>
 

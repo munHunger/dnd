@@ -1,4 +1,5 @@
 import colors from '$lib/colors';
+import { Entity } from './entity';
 export let types = ['house', 'tree', 'farm', 'greble'];
 
 /**
@@ -16,50 +17,17 @@ export function drawElement(elem, rc, options) {
 	let x2 = x + width;
 	let y2 = y + height;
 	let origin = { x, y };
-	if (elem.obj.type === 'farm') {
-		let points = [origin, { x: x2, y }, { x: x2, y: y2 }, { x, y: y2 }]
-			.map((p) => rotatePoint(origin, p, rotation))
-			.map((p) => `${p.x} ${p.y}`)
-			.join(' ');
-		console.log((rotation / (2 * Math.PI)) * 360 + (Math.random() > 0.5 ? 0 : 90));
-		rc.path(`M${x} ${y} L ${points} Z`, {
-			fill: colors.light,
-			stroke: colors.light,
-			fillStyle: 'hachure',
-			//fillStyle: 'solid',
-			fillWeight: 3,
-			hachureGap: 10,
-			hachureAngle: -(rotation / (2 * Math.PI)) * 360 + (Math.random() > 0.5 ? 0 : 90),
-			roughness: 1
-		});
+	let element = Entity.toEntity(elem);
+	if (element) {
+		console.log('can render from element?');
+		element.render(rc, options);
+	} else {
+		if (elem.obj.type === 'greble')
+			rc.line(x, y, x + width, y + height, {
+				stroke: colors.soft,
+				roughness: 6
+			});
 	}
-	if (elem.obj.type === 'house') {
-		let points = [origin, { x: x2, y }, { x: x2, y: y2 }, { x, y: y2 }]
-			.map((p) => rotatePoint(origin, p, rotation))
-			.map((p) => `${p.x} ${p.y}`)
-			.join(' ');
-		rc.path(`M${x} ${y} L ${points} Z`, {
-			fill: colors.shaded,
-			stroke: colors.line,
-			fillStyle: 'zigzag',
-			//fillStyle: 'solid',
-			fillWeight: 8,
-			hachureGap: 10,
-			roughness: 1
-		});
-	}
-	if (elem.obj.type === 'tree')
-		rc.ellipse(x + width / 2, y + height / 2, width, height, {
-			fill: colors.shaded,
-			stroke: colors.line,
-			fillStyle: 'solid',
-			roughness: 6
-		});
-	if (elem.obj.type === 'greble')
-		rc.line(x, y, x + width, y + height, {
-			stroke: colors.soft,
-			roughness: 6
-		});
 }
 
 function rotatePoint(origin, point, angle) {

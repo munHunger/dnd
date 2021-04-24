@@ -89,9 +89,7 @@ function unwrap(rect) {
  * @param {Element} element
  */
 export function addRect(t, element) {
-	console.log('addRect');
 	if (!contains(t.bounds, element.bounds)) {
-		console.log('need new parent');
 		let newParent;
 		//need to create new parent
 		if (t.bounds.x + t.bounds.width < element.bounds.x + element.bounds.width) {
@@ -126,38 +124,27 @@ export function addRect(t, element) {
 				newParent.br = t;
 			}
 		}
-		console.log('new parent created, inserting element to new root');
 		return addRect(newParent, element);
 	}
 	if (intersectHalfPoints(t.bounds, element.bounds)) {
-		console.log('pushing element to current');
 		t.elements.push(element);
 	} else {
-		console.log('could not insert to current, searching for suitable child');
 		let width = t.bounds.width / 2;
 		let height = t.bounds.height / 2;
 		let tlBounds = rect(t.bounds.x, t.bounds.y, width, height);
 		let trBounds = rect(t.bounds.x + width, t.bounds.y, width, height);
 		let blBounds = rect(t.bounds.x, t.bounds.y + height, width, height);
 		let brBounds = rect(t.bounds.x + width, t.bounds.y + height, width, height);
-		console.log(element.bounds);
-		console.log(t.bounds);
-		console.log([tlBounds, trBounds, blBounds, brBounds]);
 		if (contains(tlBounds, element.bounds)) {
-			console.log('inserting to tl');
 			t.tl = addRect(t.tl || tree(...unwrap(tlBounds)), element);
 		} else if (contains(trBounds, element.bounds)) {
-			console.log('inserting to tr');
 			t.tr = addRect(t.tr || tree(...unwrap(trBounds)), element);
 		} else if (contains(blBounds, element.bounds)) {
-			console.log('inserting to bl');
 			t.bl = addRect(t.bl || tree(...unwrap(blBounds)), element);
 		} else if (contains(brBounds, element.bounds)) {
-			console.log('inserting to br');
 			t.br = addRect(t.br || tree(...unwrap(brBounds)), element);
 		}
 	}
-	console.log('returning');
 	return t;
 }
 
