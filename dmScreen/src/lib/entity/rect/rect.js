@@ -39,9 +39,10 @@ export class Rect extends Entity {
 
 	/**
 	 * @param {import('roughjs/bin/canvas').RoughCanvas} rc
+	 * @param {CanvasRenderingContext2D} ctx
 	 * @param {*} options
 	 */
-	render(rc, options) {
+	render(rc, ctx, options) {
 		let bounds = this.bounds || {
 			x: this.inputs[0].x,
 			y: this.inputs[0].y,

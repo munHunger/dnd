@@ -5,7 +5,7 @@
 	import rough from 'roughjs';
 	import colors from '$lib/colors';
 	import { drawElement, types } from '$lib/mapRender';
-	import { Entity, Farm, House, Tree } from './entity';
+	import { Entity, Farm, House, Marker, Tree } from './entity';
 	import Options from './Options.svelte';
 	export let tree;
 	export let debug = false;
@@ -117,7 +117,9 @@
 		if (debug) {
 			drawDebugLines(tree, ctx, options);
 		}
-		quadTree.search(tree, camera).forEach((elem) => {
+		let elements = quadTree.search(tree, camera);
+		let markers = elements.filter((v) => v.obj.type === Marker.getType());
+		elements.forEach((elem) => {
 			let b = elem.bounds;
 			drawElement(
 				{
@@ -125,7 +127,8 @@
 					bounds: { ...b, x: b.x - camera.x, y: b.y - camera.y }
 				},
 				rc,
-				options
+				ctx,
+				{ ...options, markers }
 			);
 		});
 	}
@@ -136,7 +139,7 @@
 
 	function redraw() {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
-		drawTree(tree, ctx, { zoom });
+		drawTree(tree, ctx, { zoom, canvas: { width: canvas.width, height: canvas.height } });
 	}
 
 	/**

@@ -32,9 +32,10 @@ export class Line extends Entity {
 	}
 	/**
 	 * @param {import('roughjs/bin/canvas').RoughCanvas} rc
+	 * @param {CanvasRenderingContext2D} ctx
 	 * @param {*} options
 	 */
-	render(rc, options) {
+	render(rc, ctx, options) {
 		let points = this.inputs
 			.concat(this.mouse)
 			.concat(this.points)

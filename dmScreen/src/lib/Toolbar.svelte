@@ -21,7 +21,7 @@
 				},
 				obj: {}
 			});
-			entity.render(rough.canvas(canvas[i]), { zoom: 50 });
+			entity.render(rough.canvas(canvas[i]), canvas[i].getContext('2d'), { zoom: 50 });
 		});
 	});
 </script>

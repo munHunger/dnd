@@ -42,9 +42,10 @@ export class Entity {
 
 	/**
 	 * @param {import('roughjs/bin/canvas').RoughCanvas} rc
+	 * @param {CanvasRenderingContext2D} ctx
 	 * @param {*} options
 	 */
-	render(rc, options) {
+	render(rc, ctx, options) {
 		throw 'render not implemented';
 	}
 	getRotation(a, b) {

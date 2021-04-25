@@ -6,16 +6,17 @@ export let types = allTypes();
  *
  * @param {import('./quadTree').Element} elem
  * @param {import('roughjs/bin/canvas').RoughCanvas} rc
+ * @param {CanvasRenderingContext2D} ctx
  * @param {*} options
  */
-export function drawElement(elem, rc, options) {
+export function drawElement(elem, rc, ctx, options) {
 	let x = elem.bounds.x * options.zoom;
 	let y = elem.bounds.y * options.zoom;
 	let width = elem.bounds.width * options.zoom;
 	let height = elem.bounds.height * options.zoom;
 	let element = toEntity(elem);
 	if (element) {
-		element.render(rc, options);
+		element.render(rc, ctx, options);
 	} else {
 		//TODO: remove and create entity
 		if (elem.obj.type === 'greble')
