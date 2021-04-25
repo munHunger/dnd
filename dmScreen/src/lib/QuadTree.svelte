@@ -6,6 +6,7 @@
 	import colors from '$lib/colors';
 	import { drawElement, types } from '$lib/mapRender';
 	import { Entity, Farm, House, Tree } from './entity';
+	import Options from './Options.svelte';
 	export let tree;
 	export let debug = false;
 	let canvas;
@@ -147,7 +148,7 @@
 		if (!current) {
 			current = new tool();
 		}
-		let completeTool = current.click(mapPoint[0], mapPoint[1]);
+		let completeTool = current.click(mapPoint[0], mapPoint[1], e.ctrlKey, e.shiftKey);
 		if (completeTool) {
 			console.log('adding ' + JSON.stringify(completeTool));
 			current = undefined;
@@ -217,11 +218,20 @@ quadTree
 	<Toolbar onSelect={(s) => (tool = s)} />
 </div>
 
+<div class="options">
+	<Options bind:tree />
+</div>
+
 <style>
 	.toolbar {
 		position: absolute;
 		top: 1rem;
 		left: 1rem;
+	}
+	.options {
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
 	}
 	canvas {
 		position: absolute;
