@@ -61,7 +61,7 @@
 	function drawDebugLines(tree, ctx, options = { zoom: 1 }) {
 		ctx.strokeStyle = '#4C566A';
 
-		ctx.font = '25px serif';
+		ctx.font = `2rem 'Indie Flower'`;
 		ctx.fillText(
 			`(${toSingleDecimal(camera.x)},${toSingleDecimal(camera.y)}), (${toSingleDecimal(
 				camera.width
@@ -223,6 +223,7 @@ quadTree
 </div>
 
 <style>
+	@import url('https://fonts.googleapis.com/css2?family=Indie+Flower&display=swap');
 	.toolbar {
 		position: absolute;
 		top: 1rem;

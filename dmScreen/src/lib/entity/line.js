@@ -1,4 +1,4 @@
-import { Entity } from './';
+import { Entity } from './entity';
 import colors from '$lib/colors';
 
 export class Line extends Entity {
@@ -39,6 +39,15 @@ export class Line extends Entity {
 			.concat(this.mouse)
 			.concat(this.points)
 			.filter((v) => v);
+		if (this.bounds && points.length == 0) {
+			//used by thumbnail
+			points = points.concat([
+				{ x: 0, y: 0 },
+				{ x: 0.5, y: 0.25 },
+				{ x: 0.25, y: 0.5 },
+				{ x: 1, y: 1 }
+			]);
+		}
 		if (points.length > 1) {
 			console.log('rending line');
 			console.log(this);

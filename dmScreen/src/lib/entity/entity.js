@@ -1,4 +1,3 @@
-import { House, Tree, Line, Farm } from './';
 export class Entity {
 	/**
 	 * @type {import ('./quadTree').Rect}
@@ -52,29 +51,6 @@ export class Entity {
 		let dX = a.x - b.x;
 		let dY = a.y - b.y;
 		return Math.atan2(dY, dX);
-	}
-
-	/**
-	 * @param {import('./quadTree').Element} element
-	 * @returns {Entity}
-	 */
-	static toEntity(element) {
-		switch (element.obj.type) {
-			case House.getType():
-				return new House(element);
-			case Farm.getType():
-				return new Farm(element);
-			case Tree.getType():
-				return new Tree(element);
-			case Line.getType():
-				return new Line(element);
-			default:
-				throw 'unrecognized type ' + element.obj.type;
-		}
-	}
-
-	static allTypes() {
-		return [House, Farm, Tree, Line];
 	}
 
 	static rotatePoint(origin, point, angle) {

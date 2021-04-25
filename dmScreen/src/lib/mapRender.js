@@ -1,6 +1,6 @@
 import colors from '$lib/colors';
-import { Entity } from './entity';
-export let types = Entity.allTypes();
+import { allTypes, toEntity } from './entity';
+export let types = allTypes();
 
 /**
  *
@@ -13,7 +13,7 @@ export function drawElement(elem, rc, options) {
 	let y = elem.bounds.y * options.zoom;
 	let width = elem.bounds.width * options.zoom;
 	let height = elem.bounds.height * options.zoom;
-	let element = Entity.toEntity(elem);
+	let element = toEntity(elem);
 	if (element) {
 		element.render(rc, options);
 	} else {

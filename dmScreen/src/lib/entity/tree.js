@@ -1,4 +1,4 @@
-import { Entity } from './';
+import { Entity } from './entity';
 import colors from '$lib/colors';
 
 export class Tree extends Entity {

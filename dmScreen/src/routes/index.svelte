@@ -22,7 +22,7 @@
 </script>
 
 <main>
-	<QuadTree {tree} debug={false} />
+	<QuadTree {tree} debug={true} />
 </main>
 
 <style>

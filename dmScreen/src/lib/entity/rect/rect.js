@@ -1,4 +1,4 @@
-import { Entity } from '../';
+import { Entity } from '../entity';
 
 export class Rect extends Entity {
 	rotation;
