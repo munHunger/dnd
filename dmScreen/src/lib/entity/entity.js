@@ -19,18 +19,22 @@ export class Entity {
 	 * @param {number} y position in mapspace
 	 * @param {boolean} ctrl if ctrl key is down
 	 * @param {boolean} shift if shift key is down
+	 * @param {import('./quadTree').Tree} tree
 	 * @returns {Entity} if it built, undefined otherwise
 	 */
-	click(x, y, ctrl, shift) {
+	click(x, y, ctrl, shift, tree) {
 		this.inputs.push({ x, y });
-		if (this.isValid()) return this.build();
+		if (this.isValid()) return this.build(tree);
 	}
 
 	setMouse(x, y) {
 		this.mouse = { x, y };
 	}
 
-	build() {
+	/**
+	 * @param {import('./quadTree').Tree} tree
+	 */
+	build(tree) {
 		throw 'build not implemented';
 	}
 	isValid() {

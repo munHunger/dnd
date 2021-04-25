@@ -1,5 +1,6 @@
 import { Entity } from './entity';
 import colors from '$lib/colors';
+import quadTree from '$lib/quadTree';
 
 export class Marker extends Entity {
 	/**
@@ -17,9 +18,15 @@ export class Marker extends Entity {
 			this.id = elem.obj.id || 'M';
 		}
 	}
-	build() {
+	/**
+	 *
+	 * @param {import('$lib/quadTree').Tree} tree
+	 * @returns
+	 */
+	build(tree) {
+		let markers = quadTree.search(tree, tree.bounds).filter((v) => v.obj.type === Marker.getType());
 		let elem = {
-			obj: { type: Marker.getType(), legend: this.legend, id: Math.floor(Math.random() * 100) },
+			obj: { type: Marker.getType(), legend: this.legend, id: markers.length + 1 },
 			bounds: {
 				x: this.inputs[0].x,
 				y: this.inputs[0].y,
@@ -52,7 +59,6 @@ export class Marker extends Entity {
 		ctx.font = `${height}px 'Indie Flower'`;
 		ctx.fillText(this.id, x + width / 6, y + height - height / 4);
 		ctx.font = `1.5rem 'Indie Flower'`;
-		console.log(options.markers);
 		if (this.legend && options.canvas)
 			ctx.fillText(
 				this.id + ':' + this.legend,

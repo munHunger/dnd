@@ -151,7 +151,7 @@
 		if (!current) {
 			current = new tool();
 		}
-		let completeTool = current.click(mapPoint[0], mapPoint[1], e.ctrlKey, e.shiftKey);
+		let completeTool = current.click(mapPoint[0], mapPoint[1], e.ctrlKey, e.shiftKey, tree);
 		if (completeTool) {
 			console.log('adding ' + JSON.stringify(completeTool));
 			current = undefined;
@@ -198,6 +198,19 @@
 		zoom = canvas.width / camera.width;
 		redraw();
 	}
+
+	function moveCameraToMarker(id) {
+		console.log(id);
+		console.log(quadTree.search(tree, tree.bounds));
+		let marker = quadTree.search(tree, tree.bounds).find((e) => e.obj.id == id);
+		if (marker) {
+			camera.x = marker.bounds.x - camera.width / 2;
+			camera.y = marker.bounds.y - camera.height / 2;
+			redraw();
+		} else {
+			console.log('marker not found');
+		}
+	}
 </script>
 
 <svelte:window on:keydown={keyDown} on:keyup={keyUp} on:wheel={scroll} />
@@ -222,7 +235,7 @@ quadTree
 </div>
 
 <div class="options">
-	<Options bind:tree />
+	<Options bind:tree {moveCameraToMarker} />
 </div>
 
 <style>
