@@ -43,11 +43,12 @@ export class Line extends Entity {
 			console.log('rending line');
 			console.log(this);
 			console.log(options);
+			let xOffset = ((this.bounds || {}).x || points[0].x) - points[0].x;
+			let yOffset = ((this.bounds || {}).y || points[0].y) - points[0].y;
+			console.log([xOffset, yOffset]);
 			let path = points.map((i) => [
-				(i.x - (((options || {}).camera || {}).x || 0) + ((this.bounds || {}).x || 0)) *
-					options.zoom,
-				(i.y - (((options || {}).camera || {}).y || 0) + ((this.bounds || {}).y || 0)) *
-					options.zoom
+				(i.x - (((options || {}).camera || {}).x || 0) + xOffset) * options.zoom,
+				(i.y - (((options || {}).camera || {}).y || 0) + yOffset) * options.zoom
 			]);
 			rc.linearPath(path, {
 				stroke: colors.line,
