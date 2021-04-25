@@ -173,7 +173,7 @@
 			current.setMouse(mapPoint[0], mapPoint[1]);
 			canvasOverlay.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
 			let rc = rough.canvas(canvasOverlay);
-			current.render(rc, { zoom, camera });
+			current.render(rc, canvasOverlay.getContext('2d'), { zoom, camera });
 		}
 	}
 
@@ -204,9 +204,24 @@
 		console.log(quadTree.search(tree, tree.bounds));
 		let marker = quadTree.search(tree, tree.bounds).find((e) => e.obj.id == id);
 		if (marker) {
-			camera.x = marker.bounds.x - camera.width / 2;
-			camera.y = marker.bounds.y - camera.height / 2;
-			redraw();
+			let start = {
+				x: camera.x,
+				y: camera.y
+			};
+			let target = {
+				x: marker.bounds.x - camera.width / 2,
+				y: marker.bounds.y - camera.height / 2
+			};
+
+			const update = (progress) => {
+				if (progress > 1) return;
+				let p = Math.sin(progress * (Math.PI / 2));
+				camera.x = start.x + (target.x - start.x) * p;
+				camera.y = start.y + (target.y - start.y) * p;
+				redraw();
+				setTimeout(() => update((progress += 0.02)), 5);
+			};
+			update(0);
 		} else {
 			console.log('marker not found');
 		}
