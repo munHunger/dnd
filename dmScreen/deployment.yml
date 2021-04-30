@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dm-screen
+  labels:
+    app: nginx
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dm-screen
+  template:
+    metadata:
+      labels: # labels to select/identify the deployment
+        app: dm-screen
+    spec:     # pod spec
+      containers:
+      - name: dm-screen
+        image: munhunger/dnd:dmScreen
+        ports:
+        - containerPort: 3000
