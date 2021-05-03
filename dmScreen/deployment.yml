@@ -1,35 +1,167 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dm-screen
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: dm-screen
+  name: node
+  namespace: dm-screen
   labels:
-    app: nginx
+    app: node
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: dm-screen
+      app: node
   template:
     metadata:
       labels: # labels to select/identify the deployment
-        app: dm-screen
-    spec:     # pod spec
+        app: node
+    spec: # pod spec
       containers:
-      - name: dm-screen
-        image: munhunger/dnd:dmScreen
-        ports:
-        - containerPort: 3000
+        - name: node
+          image: munhunger/dnd:dmScreen
+          ports:
+            - containerPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo
+  namespace: dm-screen
+  labels:
+    app: mongo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongo
+  template:
+    metadata:
+      labels: # labels to select/identify the deployment
+        app: mongo
+    spec: # pod spec
+      volumes:
+        - name: mongo-pv
+          persistentVolumeClaim:
+            claimName: mongo-pvc
+        - name: podinfo
+          downwardAPI:
+            items:
+              - path: name
+                fieldRef:
+                  fieldPath: metadata.name
+      containers:
+        - name: mongo
+          image: mongo:latest
+          ports:
+            - containerPort: 27017
+          volumeMounts:
+            - mountPath: '/data/db'
+              name: mongo-pv
+            - mountPath: '/etc/podinfo'
+              name: podinfo
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mongo-express
+  namespace: dm-screen
+  labels:
+    app: mongo-express
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate #it is locking the db so we need downtime
+  selector:
+    matchLabels:
+      app: mongo-express
+  template:
+    metadata:
+      labels: # labels to select/identify the deployment
+        app: mongo-express
+    spec: # pod spec
+      containers:
+        - name: mongo-express
+          image: mongo-express:latest
+          ports:
+            - containerPort: 8081
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mongo-pv
+  namespace: dm-screen
+  labels:
+    type: local
+spec:
+  storageClassName: 'manual'
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: '/mnt/dm-screen'
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mongo-pvc
+  namespace: dm-screen
+spec:
+  storageClassName: 'manual'
+  accessModes:
+    - 'ReadWriteOnce'
+  resources:
+    requests:
+      storage: 20Mi
+
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: dnd-load-balancer
+  name: mongo
+  namespace: dm-screen
 spec:
   selector:
-    app: dm-screen
+    app: mongo
   ports:
-  - protocol: TCP
-    port: 3000
-    nodePort: 31011
-    targetPort: 3000
+    - port: 27017
+      protocol: TCP
+      targetPort: 27017
+      name: mongo
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mongo-express
+  namespace: dm-screen
+spec:
+  selector:
+    app: mongo-express
+  ports:
+    - protocol: TCP
+      port: 8081
+      nodePort: 31012
+      targetPort: 8081
+      name: mongo-express
+  type: LoadBalancer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node
+  namespace: dm-screen
+spec:
+  selector:
+    app: node
+  ports:
+    - protocol: TCP
+      port: 3000
+      nodePort: 31011
+      targetPort: 3000
+      name: node
   type: LoadBalancer
