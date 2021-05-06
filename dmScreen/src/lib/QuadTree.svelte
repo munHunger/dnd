@@ -7,6 +7,9 @@
 	import { drawElement, types } from '$lib/mapRender';
 	import { Entity, Farm, House, Marker, Tree } from './entity';
 	import Options from './Options.svelte';
+
+	import client from '$lib/client';
+
 	export let tree;
 	export let debug = false;
 	let canvas;
@@ -154,6 +157,7 @@
 		let completeTool = current.click(mapPoint[0], mapPoint[1], e.ctrlKey, e.shiftKey, tree);
 		if (completeTool) {
 			console.log('adding ' + JSON.stringify(completeTool));
+			client.pushElement(completeTool);
 			current = undefined;
 			tree = quadTree.addRect(tree, completeTool);
 			redraw();
@@ -202,7 +206,9 @@
 	function moveCameraToMarker(id) {
 		console.log(id);
 		console.log(quadTree.search(tree, tree.bounds));
-		let marker = quadTree.search(tree, tree.bounds).find((e) => e.obj.id == id);
+		let marker = quadTree
+			.search(tree, tree.bounds)
+			.find((e) => e.obj.id === id || e.obj.legend === id);
 		if (marker) {
 			let start = {
 				x: camera.x,
