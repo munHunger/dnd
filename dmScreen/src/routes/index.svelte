@@ -1,28 +1,38 @@
+<script context="module">
+	/**
+	 * @type {import('@sveltejs/kit').Load}
+	 */
+	export async function load({ page, fetch, session, context }) {
+		let campaign = page.query.get('campaign');
+		let url = `/index.json`;
+		if (campaign) url += `?campaign=${campaign}`;
+		const res = await fetch(url);
+
+		if (res.ok) {
+			let data = await res.json();
+			return {
+				props: {
+					campaign: data
+				}
+			};
+		}
+
+		return {
+			status: res.status,
+			error: new Error(`Could not load ${url}`)
+		};
+	}
+</script>
+
 <script>
 	import quadTree from '$lib/quadTree.js';
 	import QuadTree from '$lib/QuadTree.svelte';
 
-	let tree = quadTree.tree(0, 0, 10, 10);
-	tree = quadTree.addRect(tree, {
-		bounds: quadTree.rect(11, 11, 2, 4),
-		obj: {
-			type: 'house'
-		}
-	});
-	for (let i = 0; i < 0; i++) {
-		let x = Math.random() * 10;
-		let y = Math.random() * 10;
-		let width = Math.random() * (10 - x);
-		let height = Math.random() * (10 - y);
-		quadTree.addRect(tree, {
-			bounds: quadTree.rect(x, y, width, height),
-			obj: { type: Math.random() > 0.5 ? 'house' : 'tree' }
-		});
-	}
+	export let campaign;
 </script>
 
 <main>
-	<QuadTree {tree} debug={false} />
+	<QuadTree tree={campaign.tree} debug={false} />
 </main>
 
 <style>

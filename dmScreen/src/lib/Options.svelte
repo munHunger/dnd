@@ -18,8 +18,8 @@
 </script>
 
 <div class="bar">
-	<div on:click={save}>save</div>
-	<div on:click={load}>load</div>
+	<!-- <div on:click={save}>save</div>
+	<div on:click={load}>load</div> -->
 	<div on:click={goTo}>goto</div>
 </div>
 
