@@ -1,12 +1,12 @@
 kind: pipeline
 type: kubernetes
 steps:
-  # - name: test
-  #   image: node:alpine
-  #   commands:
-  #     - cd dmScreen
-  #     - npm install
-  #     - npm test
+  - name: test
+    image: node:alpine
+    commands:
+      - cd dmScreen
+      - npm install
+      - npm test
   - name: docker
     image: plugins/kaniko
     environment:
@@ -19,9 +19,3 @@ steps:
       PLUGIN_DOCKERFILE: dmScreen/Dockerfile
     settings:
       context: dmScreen
-
-    # settings:
-    #   context: dmScreen
-    #   dockerfile: dmScreen/Dockerfile
-    #   build_args:
-    #     - "--force"
