@@ -4,6 +4,8 @@ type: kubernetes
 steps:
   - name: test
     image: node:alpine
+    workspace:
+      path: /dmScreen
     commands:
       - npm install
       - npm test
