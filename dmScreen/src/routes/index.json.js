@@ -1,5 +1,6 @@
 import quadTree from '$lib/quadTree.js';
 import mongo from '$lib/mongo';
+import logger from '$lib/logger';
 
 async function getCampaign(name) {
 	return await mongo.collection('campaign').then((collection) =>
