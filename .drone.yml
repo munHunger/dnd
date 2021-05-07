@@ -4,9 +4,18 @@ steps:
   - name: test
     image: node:alpine
     commands:
-      - pwd
-      - ls
       - cd dmScreen
-      - ls
       - npm install
       - npm test
+  - name: docker
+    image: plugins/kaniko
+    environment:
+      PLUGIN_USERNAME:
+        from_secret: docker_username
+      PLUGIN_PASSWORD:
+        from_secret: docker_password
+      PLUGIN_TAGS: dmScreen
+      PLUGIN_REPO: munhunger/dnd
+      PLUGIN_DOCKERFILE: dmScreen/Dockerfile
+    settings:
+      context: dmScreen
