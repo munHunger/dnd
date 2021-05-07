@@ -1,11 +1,12 @@
 kind: pipeline
 type: kubernetes
-
 steps:
   - name: test
     image: node:alpine
-    workspace:
-      path: /dmScreen
     commands:
+      - pwd
+      - ls
+      - cd dmScreen
+      - ls
       - npm install
       - npm test
