@@ -1,4 +1,4 @@
-import { createLogger, transports } from 'winston';
+import winston from 'winston';
 import LokiTransport from 'winston-loki';
 const options = {
 	transports: [
@@ -7,7 +7,7 @@ const options = {
 		})
 	]
 };
-const logger = createLogger(options);
+const logger = winston.createLogger(options);
 logger.debug('hello world', { message: 'test', labels: { app: 'dmScreen' } });
 
 export default { logger };
