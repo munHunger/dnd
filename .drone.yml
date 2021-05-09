@@ -19,11 +19,3 @@ steps:
       PLUGIN_DOCKERFILE: dmScreen/Dockerfile
     settings:
       context: dmScreen
-
-deploy:
-  image: quay.io/honestbee/drone-kubernetes
-  namespace: dm-screen
-  deployment: node
-  repo: munhunger
-  container: dnd
-  tag: dmScreen
