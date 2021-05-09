@@ -7,7 +7,7 @@ export function pushElement(elem) {
 	console.log('sending to server');
 	console.log(elem);
 	window
-		.fetch('/index.json', {
+		.fetch('/index.json?campaign=' + new URLSearchParams(window.location.search).get('campaign'), {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json'

@@ -29,6 +29,10 @@
 	import QuadTree from '$lib/QuadTree.svelte';
 
 	export let campaign;
+	import { onMount } from 'svelte';
+	onMount(() => {
+		console.log('hello');
+	});
 </script>
 
 <main>

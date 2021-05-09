@@ -1,5 +1,6 @@
 import quadTree from '$lib/quadTree.js';
 import mongo from '$lib/mongo';
+import { logger } from '$lib/logger';
 
 async function getCampaign(name) {
 	return await mongo.collection('campaign').then((collection) =>
@@ -11,6 +12,7 @@ async function getCampaign(name) {
 
 export const get = async (page) => {
 	let name = page.query.get('campaign') || 'segow';
+	logger.info(`fetching campaign=${name}`);
 	let campaign = await getCampaign(name);
 	if (!campaign) {
 		await mongo.collection('campaign').then((collection) =>
@@ -30,8 +32,9 @@ export const get = async (page) => {
 };
 
 export const put = async (req) => {
-	let name = page.query.get('campaign') || 'segow';
+	let name = req.query.get('campaign') || 'segow';
 
+	logger.info(`updating campaign=${name}, with entity=${JSON.stringify(req.body)}`);
 	let campaign = await mongo.collection('campaign').then((collection) =>
 		collection.findOne({
 			name
@@ -47,7 +50,6 @@ export const put = async (req) => {
 			{ upsert: true }
 		)
 	);
-	console.log(newTree);
 	return {
 		status: 200,
 		body: {}
