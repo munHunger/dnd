@@ -19,3 +19,8 @@ steps:
       PLUGIN_DOCKERFILE: dmScreen/Dockerfile
     settings:
       context: dmScreen
+  - name: deploy
+    image: bitnami/kubectl
+    commands:
+      - cd dmScreen
+      - kubectl apply -f deployment.yml
