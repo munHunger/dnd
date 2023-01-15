@@ -1,10 +1,37 @@
 name: Children of the Black Sign
 description: |-
+
+  The Mystic Cult Children of the Black Sign are a mysterious group of cultists who have set out on a secret mission to summon the demon lord Balor. 
+  They have managed to gain followers through their occult practices and their terrifying reputation. 
+
+  The cultists are known for wearing hooded black robes with a large, dark sign emblazoned on them. 
+  They also wear ornate masks that obscure their faces, and often carry magical items such as wands and staffs. 
+  They speak in a strange and cryptic language, and their words often carry a sinister connotation. 
+
+  The cultists are known for their obscure rituals and dark powers. 
+  They often invoke dark forces and summon dark creatures to do their bidding. 
+  It is believed that those who join the cult are made to swear a blood oath, and those who break their vows will face a terrifying fate.
+
+  Cultists of the Black Sign typically speak in a ritualistic, cryptic manner, using ambiguous and abstract language to express their beliefs. 
+  They often speak in a low, eerie tone, using words and phrases that could be interpreted in multiple ways.
+
   A cult group bent on summoning Balor.
   The recipe for Balor requires 9 fiends to be sacrificed, thus they spend 9 days summoning Hezrous.
   Note that each Hezrou requires a summoner to keep focus.
 
   Additionally they need candles, goats
+
+Example phrases:
+ - "The ancient ones beckon from beyond the veil."
+ - "We are the children of the night."
+ - "The darkness will consume us all."
+ - "The time of awakening is nigh."
+ - "A sacrifice must be made to appease the gods."
+ - "We are the keepers of The Black Sign."
+ - "The power of the void is ours to wield."
+ - "The secrets of the abyss shall be revealed."
+ - "Those who seek the truth must walk the path of shadows."
+ - "The gateways of oblivion await."
 events:
   - day: 0
     description: |-
