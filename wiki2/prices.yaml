@@ -1,0 +1,14 @@
+dailyWages:
+  poor:	0.2
+  modest: 1
+  comfortable: 2 
+  wealthy: 4 
+  aristocratic: 10
+
+housingFactor: 0.4
+
+wizard:
+  "1st-3rd": 50-250
+  "4th-5th": 250-2500
+  "6th-7th": 2500-25000
+  "9th": 25,000 or more
