@@ -1,3 +1,62 @@
 name: Segow Warriors
 description: |-
-  A maffia group
+  The Segow Warriors are a cyberpunk themed maffia group that has been around for decades and has been known for its violent and ruthless past. 
+  The crime syndicate consists of a number of different gangs, each specializing in different areas of criminal activity. 
+  They specialize in cybercrime, extortion, drugs, and money laundering.
+
+  The Segow Warriors are very public and have been known to have corrupt politicians on their side. 
+  This has enabled them to operate under the radar and get away with their illegal activities. 
+  They have been known to use their connections in the underworld to bring down their enemies.
+
+  The Segow Warriors have a long and violent history. 
+  They have been involved in turf wars, assassinations, and bombings. 
+  They have been known to target rival gangs and even innocent bystanders, as they have no regard for justice or the law.
+
+  This crime syndicate has been known to be a major player in the cyberpunk underworld, and their activities have been an ongoing threat to the public and law enforcement. 
+  Although they have been known to be ruthless and violent, they have also had some successes. 
+  They have managed to remain a powerful force in the cyberpunk underworld and have been difficult to eradicate.
+events:
+  - day: 1
+    description: |-
+      The Segow Warriors break into a tech lab in the middle of the night, searching for the cybernetics. 
+        They get their hands on a prototype and where to find more.
+      This makes the news early morning.
+  - day: 2
+    description: |-
+      The Warriors hack into the computer systems at the lab, gaining access to the blueprints of the cybernetics. 
+      A party of adventurers can prevent this by setting up traps or security measures to stop the Warriors from breaking into the system. 
+  - day: 3
+    description: |-
+      The Warriors purchase weapons and supplies for their mission. 
+  - day: 4
+    description: 
+  - day: 5
+    description: 
+  - day: 6
+    description: |-
+      The Warriors spread rumors to the public about their mission, in order to gain support and resources. 
+      A party of adventurers can prevent this by going around the city and debunking the rumors. 
+      TODO: what rumors?
+  - day: 7
+    description: |-
+      The Warriors bribe officials in the government to gain access to restricted information about the components of the cybernetics
+      A party of adventurers can prevent this by exposing the officials corruption and showing evidence of the bribe.
+  - day: 8
+    description: 
+  - day: 9
+    description: |-
+      The Warriors commandeer a ship to transport the cybernetics parts. 
+      This makes the news
+  - day: 10
+    description:
+  - day: 11
+    description: |-
+      The warriors kidnap 5 famous cybernetics experts. 
+      This makes the news
+  - day: 12
+    description: 
+  - day: 13
+    description:
+  - day: 14
+    description: |-
+      The Warriors finally get their hands on the cybernetics. 
