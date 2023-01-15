@@ -1,0 +1,26 @@
+mandatePeriods: 
+  - party: RC
+    leader: Antonio Gonzales - Antonio was an outspoken defender of the rights of the working class and a passionate advocate for social justice
+    policy: |-
+      Increasing government support for small businesses and improving access to affordable housing
+      His policies also aimed to reduce the power of the wealthy and corporate interests in the city.
+    controversy: Antonio was accused of corruption when it was discovered that he had ties to a local mafia syndicate. He was caught on tape accepting bribes from the local don.
+  - party: UC
+    leader: Charles Jones - Charles was a strong proponent of free-market capitalism and deregulation
+    policy: |-
+      His policies focused on cutting taxes, reducing government red tape, and encouraging businesses to expand and create jobs. 
+      He was also a vocal opponent to any attempts to increase the power of the working class, and against unionizing.
+    controversy: Charles was implicated in a kickback scandal involving local construction companies.
+  - party: RC
+    leader: Sarah Green - Sarah was a passionate advocate for social justice and a strong proponent of environmental protection
+    policy: Her policies focused on increasing access to affordable housing, reducing poverty, and protecting the city's natural resources. 
+  - party: RC
+    leader: Maria Lopez - Maria was a champion of the working class, advocating for better wages and working conditions
+    policy: |-
+      strong proponent of environmental protection, and her policies focused on reducing pollution and protecting the city's natural resources. 
+    controversy: Maria was accused of nepotism, as it was discovered that she had hired her family members to high-level government positions.
+  - party: UC
+    leader: David Miller - David was an advocate for economic growth and deregulation.
+    policy: |-
+      His policies focused on cutting taxes for businesses and reducing regulations for businesses. 
+      He was also a vocal opponent of any attempts to increase the power of the working class.
