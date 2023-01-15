@@ -6,6 +6,18 @@ description: |-
   If elected they will remove the law against surveillance.
 
   Additionally they will appoint task forces with protecting a certain group of people from maffia.
+npc:
+  - name: Hank Zant
+    race: human
+    description:
+      short hair, bushy mustache, and a weathered face.
+
+      He is a no-nonsense kind of leader.
+      loyal to his cause. He is very pragmatic understanding that compromise can be necessary to get the job done.
+
+      Hank speaks in a gruff, but measured tone. 
+      He is not afraid to speak his mind, but also listens intently to what others have to say. 
+      He often uses phrases such as "we must be steadfast in our convictions" and "we must stand together".
 events:
   - day: 0
     description: |-
