@@ -1,0 +1,80 @@
+name: Neon Syndicate
+description: |-
+  1. The Neon Syndicate was first established in the early days of Cyberpunk when computers and hackers were just starting to become more prevalent. They were a loosely affiliated group of hackers who used their skills to gain access to highly secure networks and systems for their own gain and to cause disruption.
+
+  2. The Neon Syndicate became infamous for their ability to hack into and take control of high security systems with ease, earning them a reputation as one of the most dangerous hacker groups in the world.
+
+  3. In the early days, the syndicate was led by a mysterious figure known only as the “Black Cat”. He was a master hacker and brilliant strategist who used his skills to manipulate the security systems of powerful corporations, governments and even entire cities.
+
+  4. The Neon Syndicate was instrumental in the development of the Darknet, an underground network of encrypted data and communications that was used to facilitate illicit activities.
+
+  5. The Neon Syndicate was responsible for numerous high-profile hacks and thefts throughout the late 20th and early 21st century, including the theft of sensitive military secrets, corporate espionage and the disruption of major computer networks.
+
+  6. In the early 21st century, the Neon Syndicate was led by the mysterious “White Rabbit”. He was a master hacker and brilliant strategist who used his skills to manipulate the security systems of powerful corporations, governments and even entire cities to his own gain.
+
+  7. In the late 21st century, the Neon Syndicate began to focus on cyber warfare and the development of advanced hacking techniques and tools. This allowed them to gain access to highly secure networks and systems with ease, earning them an even greater reputation as one of the most dangerous hacker groups in the world.
+
+  8. In the early 22nd century, the Neon Syndicate was led by the enigmatic “Crimson King”. He was a master hacker and brilliant strategist who used his skills to manipulate the security systems of powerful corporations, governments and even entire cities to his own gain.
+
+  9. The Neon Syndicate was instrumental in the development of the virtual reality world known as the “Matrix”. This allowed them to gain access to networks and systems with ease and to conduct their activities in a secure, anonymous environment.
+
+  10. In the late 22nd century, the Neon Syndicate was disbanded and its members scattered across the world. However, their legacy remains and their activities continue to this day.
+npc:
+  - name: The black cat
+    race: thiefling
+    description: |-
+      dark complexion, short black hair. She wears a black jumpsuit with a hood and mask.
+
+      She was one of the best hackers in all the verse before she got caught.
+      It is claimed that she killed herself in prison.
+
+      She was known for having a lot of information about most criminal networks, and dirty politicians.
+      However that never came out.
+  - name: The White Rabbit
+    race: elf
+    description: |-
+      mysterious and hacker. tall, slim build with long white hair and a sharp angular face.
+      His eyes are piercingly blue, almost as if illuminous.
+
+      Often seen with white gloves, a white hat, and a large rabbit pendant.
+
+      Witty and sarcastic personality, known for manipulating the public and pushing people to do his bidding.
+      He is a master at getting into restricted areas and finding out information that others cant
+  - name: The Crimson King
+    race: Orc
+    description: |-
+      Intimidating figure at 195cm. pale skin and crimson hair.
+      He wears a leather coat over tattered black t-shirt and dark jeans.
+
+      He is a ruthless villain, willing to do whatever it takes to get what he wants.
+      He is cunning an calculating in his methods, with a unique ability to think several steps ahead of everyone else.
+      His cold and calculating demeanor often leaves people feeling uneasy when in his presence.
+
+      He speaks in a deep, rumbling voice. His speech pattern is often slow and methodical, as if carefully weighing every word he speeks.
+      He is also known to be very sarcastic and often speaks in a mocking tone
+events:
+  - day: 0
+    description: |-
+      The players are hired by a mysterious employer to investigate a strange data leak in segow.
+      They must find out the source of the data leak and its implications
+      TODO: where do they need to go?
+
+      They figure out the source being the neon syndicate.
+      
+       The players investigate further into the data leak and uncover a possible connection between the leak and a powerful megacorporation. They must find out more information to prove this connection.
+
+       The players investigate further and confirm the connection between the data leak and the megacorporation. They must now confront the corporation and demand answers.
+
+       The players confront the megacorporation and demand answers about the data leak. The corporation is unwilling to cooperate and the players must find a way to force their hand.
+
+       Corporate Retaliation - The megacorporation retaliates by sending a team of corporate mercenaries to hunt down the players. The players must find a way to survive the onslaught and escape.
+
+       Seeking Refuge - The players flee the city and seek refuge in a safehouse provided by their mysterious employer. Here they must rest and prepare for their next move.
+
+       The Final Piece - The players investigate further and discover the final piece of the puzzle. They must now find a way to use this information to their advantage.
+
+       The players confront the megacorporation and use the information they have gathered to force the corporation to reveal the truth behind the data leak.
+
+       The Aftermath - The players have successfully uncovered the truth behind the data leak and must now deal with the consequences. They must also decide what to do with the information they have uncovered.
+
+       Cleaning Up - The players must now clean up the mess they have made and ensure that the megacorporation is held accountable for its actions.

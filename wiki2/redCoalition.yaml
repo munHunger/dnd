@@ -1,0 +1,52 @@
+name: The Red Coalition
+description: |-
+  A political party aimed for the masses.
+
+  Their current biggest views is that we need to fight back against maffia.
+  If elected they will remove the law against surveillance.
+
+  Additionally they will appoint task forces with protecting a certain group of people from maffia.
+events:
+  - day: 0
+    description: |-
+      News about the upcoming speech
+  - day: 1
+    description: |-
+      The speech is held in front of the masses, and an attempted murder of the leader is being executed.
+      Fortunately the shot misses and hits a secretary instead.
+    speech: |-
+      Good evening, esteemed members of the legislature.
+
+      I come before you tonight with a passionate plea for a law that will ensure the safety of our people. As you know, the current ban on surveillance in public and private places has been a source of grave concern for citizens. This law is long overdue and must be passed without delay.
+
+      We all know that the criminal underworld is powerful and determined to evade justice in any way possible. Without proper surveillance, it's nearly impossible to prevent their nefarious activities. By allowing surveillance, we are giving law enforcement the tools they need to protect us.
+
+      Furthermore, it's essential that we provide protection to the courageous judges who are fighting against the mafia. These judges are often targets of intimidation and violence. We must do whatever we can to protect them and make sure they can continue to do their work without fear of reprisal.
+
+      To this end, I am proposing the formation of a special group of soldiers to protect these brave judges. They will be equipped with the most advanced surveillance technology to keep these judges safe. This group will be tasked with the responsibility of safeguarding the future of our justice system.
+
+      I understand that this is a controversial proposal, but I am confident that it is the right thing to do. We must take action now to protect our citizens, our law enforcement, and our judges. I urge you to pass this law without delay. Thank you.
+  - day: 6
+    description: |-
+      local politicians are being thrown out for being rats.
+      Call for aid during the next big speech
+  - day: 10
+    description: |-
+      speech day, just before election. More attempted assassinations
+    speech: |-
+      Good morning everyone. 
+
+      I'm here today to talk about the importance of lifting the surveillance ban as soon as possible. As many of you know, nine days ago, I was the target of a failed assassination attempt. Since then, no one has been arrested - and we can only assume that this is because of the ban on surveillance.
+
+      It's clear that the ban is a hindrance to justice being served. Without the use of surveillance, our police officers are unable to track down criminals and bring them to justice. This is an unacceptable situation that must be rectified as soon as possible.
+
+      It's not just justice that is being hindered by the ban on surveillance. It's also our sense of security. Without the ability to track criminals and their activities, our communities can't feel safe. We all want to feel secure in our homes and our communities. Without the ability to use surveillance, this is impossible.
+
+      The ban on surveillance needs to be lifted immediately. We need to be able to track criminals and bring them to justice, and we need to be able to feel safe in our communities. I urge the government to take action and lift the ban on surveillance as soon as possible.
+
+      Thank you for your time.
+  - day: 14
+    description: |-
+      election day.
+      One voting house vandalized.
+      If leader survives they get elected, if not they loose.

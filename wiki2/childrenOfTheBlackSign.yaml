@@ -1,0 +1,58 @@
+name: Children of the Black Sign
+description: |-
+  A cult group bent on summoning Balor.
+  The recipe for Balor requires 9 fiends to be sacrificed, thus they spend 9 days summoning Hezrous.
+  Note that each Hezrou requires a summoner to keep focus.
+
+  Additionally they need candles, goats
+events:
+  - day: 0
+    description: |-
+      1000 candles stolen.
+      This reaches minor news and starts conversations.
+      "Did you hear about the candle theft at the Glasshopper."
+      "Odd thing to only steal candles, don't you think?"
+  - day: 1
+    description: |-
+      A bunch of hooded people had been seen running around the animal farms
+      A request is sent out for protection.
+  - day: 2
+    description: |-
+      Attempted theft of 10 goats.
+  - day: 3
+    description: |-
+      The goat theft reaches the main news
+  - day: 4
+    description: |-
+      Summon Hezrou
+      https://www.dndbeyond.com/monsters/16922-hezrou
+  - day: 5
+    description: |-
+      Summon Hezrou
+  - day: 6
+    description: |-
+      Summon Hezrou
+      2 Hezrous has been seen slaughtering everyone at a local bar. fortunately during late hour, only 13 patrons and the owner dead.
+  - day: 7
+    description: |-
+      Summon Hezrou
+  - day: 8
+    description: |-
+      Summon Hezrou
+      Foul smell escapes the ritual room/sector. Newscast about it being under lockdown and you are not advised to go there
+  - day: 9
+    description: |-
+      Summon Hezrou
+  - day: 10
+    description: |-
+      Summon Hezrou
+  - day: 11
+    description: |-
+      Summon Hezrou
+  - day: 12
+    description: |-
+      Summon Hezrou
+  - day: 13
+    description: |-
+      Summon Balor
+      https://www.dndbeyond.com/monsters/16797-balor
