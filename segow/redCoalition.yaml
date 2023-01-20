@@ -9,19 +9,20 @@ description: |-
 npc:
   - name: Hank Zant
     race: human
-    description:
-      short hair, bushy mustache, and a weathered face.
+    description: short hair, bushy mustache, and a weathered face.
+
 
       He is a no-nonsense kind of leader.
       loyal to his cause. He is very pragmatic understanding that compromise can be necessary to get the job done.
 
-      Hank speaks in a gruff, but measured tone. 
-      He is not afraid to speak his mind, but also listens intently to what others have to say. 
-      He often uses phrases such as "we must be steadfast in our convictions" and "we must stand together".
+
+      Hank speaks in a gruff, but measured tone.
+      He is not afraid to speak his mind, but also listens intently to what others have to say.
+      He often uses phrases such as _"we must be steadfast in our convictions" and "we must stand together"_.
 events:
-  - day: 0
+  - day: 1
     description: |-
-      News about the upcoming speech
+      News about the upcoming red coalition speech
   - day: 1
     description: |-
       The speech is held in front of the masses, and an attempted murder of the leader is being executed.

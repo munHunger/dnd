@@ -33,6 +33,7 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"daisyui": "^2.47.0"
+		"daisyui": "^2.47.0",
+		"svelte-markdown": "^0.2.3"
 	}
 }
