@@ -20,7 +20,7 @@ npc:
       He is not afraid to speak his mind, but also listens intently to what others have to say.
       He often uses phrases such as _"we must be steadfast in our convictions" and "we must stand together"_.
 events:
-  - day: 1
+  - day: 0
     description: |-
       News about the upcoming red coalition speech
   - day: 1

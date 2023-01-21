@@ -1,0 +1,21 @@
+- name: Neon Chroma
+  npc:
+    - name: Neo
+      race: near human
+      description: A charismatic android with a dry wit, Neo enjoys chatting with patrons about the latest tech advancements.
+  signatureDrink: |-
+    Neo's Blissful Elixir: Create a unique blend of equal parts vodka, amaretto, and blueberry flavored syrup. Pour into an ice-filled shaker and shake vigorously. Serve in a martini glass with a lime wedge garnish.
+- name: The Glitch
+  npc:
+    - name: Bart
+      race: human
+      description: Bart is a human with a cybernetic eye that helps him keep tabs on the patrons.
+  signatureDrink: |-
+    AI Elixir: Combine 3 ounces of tequila with 2 ounces of lime juice, 1 ounce of triple sec, and 1/2 ounce of ginger beer syrup. Pour into a copper mug and top with ginger beer. Serve with a lime wedge.
+- name: The Analog
+  npc:
+    - name: Annie
+      race: human
+      description: Annie is a human with a passion for vintage tech and a love of good conversation.
+  signatureDrink: |-
+    Cybernetic Sunrise: Muddle 1/2 ounce of cranberry juice and 1/4 ounce of lime juice in a shaker. Add 1 ounce of vodka and 2 ounces of orange juice. Shake and strain into a rocks glass filled with ice. Garnish with a lime wheel.

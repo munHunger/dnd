@@ -5,10 +5,18 @@ export const prerender = true;
 export const csr = false;
 
 export async function load() {
-	const news = await segow.queryWiki(`events.day == 1; .description`);
-	const npc = (await segow.queryWiki(`npc.name === "Hank Zant"; .description`))[0];
+	const news = await segow.queryWiki(`events.day == 0; .description`);
+	const hank = (await segow.queryWiki(`npc.name === "Hank Zant"`))[0][0];
+	const rabbit = (await segow.queryWiki(`npc.name === "The White Rabbit"`))[0][0];
+	const price = JSON.stringify(await segow.queryWiki(`.dailyWages !== undefined`))
+	const mandate = (await segow.queryWiki("mandatePeriod !== undefined"))
+	console.log(mandate)
 	return {
 		news,
-		cards: [{ title: 'Hank Zant', text: npc, width: 2, height: 2 }]
+		cards: [
+			{ title: hank.name, text: hank.description, width: 2, height: 2 },
+			{ title: "wages", text: price, width: 1, height: 1 },
+			{ title: rabbit.name, text: rabbit.description, width: 3, height: 1 }
+		]
 	};
 }

@@ -58,7 +58,8 @@ events:
       The players are hired by a mysterious employer to investigate a strange data leak in segow.
       They must find out the source of the data leak and its implications
       TODO: where do they need to go?
-
+  - day: 1
+    description: |-
       They figure out the source being the neon syndicate.
       
       The players investigate further into the data leak and uncover a possible connection between the leak and UC.
